@@ -24,3 +24,8 @@ export interface GridTopology {
   nodes: GridNode[];
   edges: GridEdge[];
 }
+
+export interface TopologyResponse {
+  nodes: GridNode[];
+  edges: GridEdge[];
+}
