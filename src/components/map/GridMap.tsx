@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { GRID_TOPOLOGY } from '../../data/topology';
-import type { GridNode } from '../../types/grid';
+import type { GridNode, GridEdge } from '../../types/grid';
 import { D3Overlay } from './D3Overlay';
 import { MapLegend } from './MapLegend';
 
@@ -13,14 +12,61 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 interface GridMapProps {
+  nodes: GridNode[];
+  edges: GridEdge[];
   onNodeClick?: (node: GridNode) => void;
   selectedNodeId?: string | null;
 }
 
-export function GridMap({ onNodeClick, selectedNodeId }: GridMapProps) {
+function nodesToGeoJSON(nodes: GridNode[]) {
+  return {
+    type: 'FeatureCollection' as const,
+    features: nodes.map(node => ({
+      type: 'Feature' as const,
+      geometry: {
+        type: 'Point' as const,
+        coordinates: [node.lng, node.lat],
+      },
+      properties: {
+        id: node.id,
+        name: node.name,
+        type: node.type,
+        status: node.status,
+        voltage: node.voltage,
+        frequency: node.frequency,
+        load: node.load,
+        color: STATUS_COLORS[node.status],
+      },
+    })),
+  };
+}
+
+function edgesToGeoJSON(nodes: GridNode[], edges: GridEdge[]) {
+  return {
+    type: 'FeatureCollection' as const,
+    features: edges.map(edge => {
+      const src = nodes.find(n => n.id === edge.source)!;
+      const tgt = nodes.find(n => n.id === edge.target)!;
+      return {
+        type: 'Feature' as const,
+        geometry: {
+          type: 'LineString' as const,
+          coordinates: [
+            [src.lng, src.lat],
+            [tgt.lng, tgt.lat],
+          ],
+        },
+        properties: { id: edge.id, capacity: edge.capacity },
+      };
+    }),
+  };
+}
+
+export function GridMap({ nodes, edges, onNodeClick, selectedNodeId }: GridMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
@@ -39,24 +85,7 @@ export function GridMap({ onNodeClick, selectedNodeId }: GridMapProps) {
       // Add edge lines source and layer
       map.addSource('grid-edges', {
         type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: GRID_TOPOLOGY.edges.map(edge => {
-            const src = GRID_TOPOLOGY.nodes.find(n => n.id === edge.source)!;
-            const tgt = GRID_TOPOLOGY.nodes.find(n => n.id === edge.target)!;
-            return {
-              type: 'Feature' as const,
-              geometry: {
-                type: 'LineString' as const,
-                coordinates: [
-                  [src.lng, src.lat],
-                  [tgt.lng, tgt.lat],
-                ],
-              },
-              properties: { id: edge.id, capacity: edge.capacity },
-            };
-          }),
-        },
+        data: edgesToGeoJSON(nodes, edges),
       });
 
       map.addLayer({
@@ -73,26 +102,7 @@ export function GridMap({ onNodeClick, selectedNodeId }: GridMapProps) {
       // Add nodes source and layer
       map.addSource('grid-nodes', {
         type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: GRID_TOPOLOGY.nodes.map(node => ({
-            type: 'Feature' as const,
-            geometry: {
-              type: 'Point' as const,
-              coordinates: [node.lng, node.lat],
-            },
-            properties: {
-              id: node.id,
-              name: node.name,
-              type: node.type,
-              status: node.status,
-              voltage: node.voltage,
-              frequency: node.frequency,
-              load: node.load,
-              color: STATUS_COLORS[node.status],
-            },
-          })),
-        },
+        data: nodesToGeoJSON(nodes),
       });
 
       map.addLayer({
@@ -133,19 +143,37 @@ export function GridMap({ onNodeClick, selectedNodeId }: GridMapProps) {
 
       // Expose map instance to React state for D3Overlay
       setMapInstance(map);
+      setMapLoaded(true);
     });
 
     return () => {
       map.remove();
       mapRef.current = null;
       setMapInstance(null);
+      setMapLoaded(false);
     };
   }, []);
+
+  // Update GeoJSON sources when nodes change (live WebSocket updates)
+  useEffect(() => {
+    if (!mapLoaded || !mapRef.current) return;
+    const map = mapRef.current;
+    const nodesSource = map.getSource('grid-nodes') as maplibregl.GeoJSONSource | undefined;
+    const edgesSource = map.getSource('grid-edges') as maplibregl.GeoJSONSource | undefined;
+    nodesSource?.setData(nodesToGeoJSON(nodes));
+    edgesSource?.setData(edgesToGeoJSON(nodes, edges));
+  }, [nodes, edges, mapLoaded]);
 
   return (
     <div className="absolute inset-0">
       <div ref={mapContainerRef} className="w-full h-full" />
-      {mapInstance && <D3Overlay map={mapInstance} selectedNodeId={selectedNodeId ?? null} />}
+      {mapInstance && (
+        <D3Overlay
+          map={mapInstance}
+          selectedNodeId={selectedNodeId ?? null}
+          nodes={nodes}
+        />
+      )}
       <MapLegend />
     </div>
   );

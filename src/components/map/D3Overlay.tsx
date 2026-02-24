@@ -1,15 +1,15 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import type maplibregl from 'maplibre-gl';
-import { GRID_TOPOLOGY } from '../../data/topology';
 import type { GridNode } from '../../types/grid';
 
 interface D3OverlayProps {
   map: maplibregl.Map | null;
   selectedNodeId: string | null;
+  nodes: GridNode[];
 }
 
-export function D3Overlay({ map, selectedNodeId }: D3OverlayProps) {
+export function D3Overlay({ map, selectedNodeId, nodes }: D3OverlayProps) {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -17,7 +17,6 @@ export function D3Overlay({ map, selectedNodeId }: D3OverlayProps) {
 
     const m = map; // narrow to non-null for use inside nested functions
     const svg = d3.select(svgRef.current);
-    const { nodes } = GRID_TOPOLOGY;
 
     function project(node: GridNode) {
       const point = m.project([node.lng, node.lat]);
@@ -83,7 +82,7 @@ export function D3Overlay({ map, selectedNodeId }: D3OverlayProps) {
       m.off('zoom', render);
       m.off('resize', render);
     };
-  }, [map, selectedNodeId]);
+  }, [map, selectedNodeId, nodes]);
 
   return (
     <svg
