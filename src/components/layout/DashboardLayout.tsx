@@ -7,10 +7,17 @@ import { useTopology } from '../../hooks/useTopology';
 import { useNodeWebSocket } from '../../hooks/useNodeWebSocket';
 import type { GridNode } from '../../types/grid';
 
+const API_BASE = import.meta.env.VITE_API_BASE ?? 'http://localhost:8000';
+
 export function DashboardLayout() {
   const [selectedNode, setSelectedNode] = useState<GridNode | null>(null);
   const { nodes: topologyNodes, edges, loading } = useTopology();
   const { nodeMap, connected } = useNodeWebSocket();
+
+  const handleStormEvent = async () => {
+    const res = await fetch(`${API_BASE}/api/storm`, { method: 'POST' });
+    if (!res.ok) throw new Error(`Storm injection failed: ${res.status}`);
+  };
 
   // Merge: use WebSocket state if available, fall back to topology
   const liveNodes = useMemo(() => {
@@ -36,7 +43,7 @@ export function DashboardLayout() {
     <div className="h-screen flex flex-col bg-grid-bg overflow-hidden">
       <Header connected={connected} />
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
+        <Sidebar onStormEvent={handleStormEvent} />
         <main className="flex-1 relative bg-grid-bg" id="map-canvas">
           <GridMap
             nodes={liveNodes}

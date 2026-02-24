@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Map, Activity, Cpu, BarChart2 } from "lucide-react";
 
 interface NavItem {
@@ -13,7 +14,30 @@ const navItems: NavItem[] = [
   { icon: BarChart2, label: "Analytics" },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  onStormEvent?: () => Promise<void>;
+}
+
+export function Sidebar({ onStormEvent }: SidebarProps) {
+  const [loading, setLoading] = useState(false);
+  const [lastResult, setLastResult] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const handleStorm = async () => {
+    if (!onStormEvent || loading) return;
+    setLoading(true);
+    setLastResult('idle');
+    try {
+      await onStormEvent();
+      setLastResult('success');
+      setTimeout(() => setLastResult('idle'), 3000);
+    } catch {
+      setLastResult('error');
+      setTimeout(() => setLastResult('idle'), 3000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <aside className="w-56 bg-grid-surface border-r border-grid-border flex flex-col flex-shrink-0">
       {/* Nav items */}
@@ -35,6 +59,31 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {/* Storm Event button */}
+      <div className="p-3 border-t border-grid-border">
+        <button
+          onClick={handleStorm}
+          disabled={loading}
+          className={`w-full flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
+            ${loading
+              ? 'bg-orange-500/20 text-orange-300 cursor-wait'
+              : lastResult === 'success'
+              ? 'bg-green-500/20 text-green-400'
+              : lastResult === 'error'
+              ? 'bg-red-500/20 text-red-400'
+              : 'bg-orange-500/20 text-orange-400 hover:bg-orange-500/30'
+            }`}
+        >
+          {loading
+            ? 'Injecting...'
+            : lastResult === 'success'
+            ? 'Storm Injected'
+            : lastResult === 'error'
+            ? 'Failed'
+            : 'Simulate Storm Event'}
+        </button>
+      </div>
 
       {/* Bottom: version badge */}
       <div className="p-3 border-t border-grid-border">
