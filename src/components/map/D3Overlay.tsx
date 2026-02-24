@@ -139,11 +139,119 @@ export function D3Overlay({ map, selectedNodeId, nodes, stormActive, epicenterId
         });
     });
 
+    // --- Storm layer elements (managed separately from render()) ---
+
+    // Ensure defs exist for filters + markers
+    let defs = svg.select<SVGDefsElement>('defs');
+    if (defs.empty()) defs = svg.insert('defs', ':first-child');
+
+    // Fog blur filter
+    if (defs.select('#storm-fog-filter').empty()) {
+      const filter = defs.append('filter').attr('id', 'storm-fog-filter').attr('x', '-50%').attr('y', '-50%').attr('width', '200%').attr('height', '200%');
+      filter.append('feGaussianBlur').attr('stdDeviation', '18');
+    }
+
+    const stormLayer = svg.select<SVGGElement>('g.storm-layer');
+
+    // Shockwave: single circle that we transition repeatedly
+    const shockwaveCircle = stormLayer.append('circle')
+      .attr('class', 'shockwave')
+      .attr('fill', 'none')
+      .attr('stroke', '#ef4444')
+      .attr('stroke-width', 2)
+      .attr('r', 0)
+      .attr('opacity', 0)
+      .style('pointer-events', 'none');
+
+    // Fog ellipse
+    const fogEllipse = stormLayer.append('ellipse')
+      .attr('class', 'storm-fog')
+      .attr('rx', 90).attr('ry', 60)
+      .attr('fill', 'rgba(80, 100, 160, 0.13)')
+      .attr('filter', 'url(#storm-fog-filter)')
+      .style('pointer-events', 'none')
+      .attr('opacity', 0);
+
+    // Wind arrows (8 arrows near epicenter)
+    const ARROW_PATH = 'M0,-10 L4,-2 L1.5,-2 L1.5,10 L-1.5,10 L-1.5,-2 L-4,-2 Z';
+    const WIND_DEG = 20; // degrees from vertical
+    const arrowOffsets = [
+      [-60, -40], [0, -55], [60, -40],
+      [-80, 0],             [80, 0],
+      [-60, 40],  [0, 55],  [60, 40],
+    ];
+    const windArrows = stormLayer.selectAll<SVGPathElement, number[]>('path.wind-arrow')
+      .data(arrowOffsets)
+      .enter()
+      .append('path')
+      .attr('class', 'wind-arrow')
+      .attr('d', ARROW_PATH)
+      .attr('fill', 'rgba(160,200,240,0.35)')
+      .attr('opacity', 0)
+      .style('pointer-events', 'none');
+
+    let shockwaveActive = false;
+    function triggerShockwave(cx: number, cy: number) {
+      if (shockwaveActive) return;
+      shockwaveActive = true;
+      shockwaveCircle.attr('cx', cx).attr('cy', cy).attr('r', 0).attr('opacity', 0.9);
+      shockwaveCircle.transition().duration(1500).ease(d3.easeQuadOut)
+        .attr('r', 130).attr('opacity', 0)
+        .on('end', () => {
+          shockwaveActive = false;
+          // Repeat while storm is active
+          if (stormActiveRef.current) setTimeout(() => {
+            const eNode = nodesRef.current.find(n => n.id === epicenterIdRef.current);
+            if (eNode && m) {
+              const p = m.project([eNode.lng, eNode.lat]);
+              triggerShockwave(p.x, p.y);
+            }
+          }, 800);
+        });
+    }
+
+    // Storm elements animation via timer
+    const stormTimer = d3.timer(() => {
+      const active = stormActiveRef.current;
+      const eId = epicenterIdRef.current;
+      const epicenterNode = nodesRef.current.find(n => n.id === eId);
+
+      if (!active || !epicenterNode) {
+        fogEllipse.attr('opacity', 0);
+        windArrows.attr('opacity', 0);
+        return;
+      }
+
+      const ePos = m.project([epicenterNode.lng, epicenterNode.lat]);
+
+      // Position fog
+      fogEllipse.attr('cx', ePos.x).attr('cy', ePos.y).attr('opacity', 1);
+
+      // Position and animate wind arrows
+      windArrows
+        .attr('transform', (_d, i) => {
+          const ox = (arrowOffsets[i][0]);
+          const oy = (arrowOffsets[i][1]);
+          return `translate(${ePos.x + ox}, ${ePos.y + oy}) rotate(${WIND_DEG})`;
+        })
+        .attr('opacity', (_d, i) => {
+          // Stagger opacity so they pulse in sequence
+          return 0.2 + 0.25 * Math.abs(Math.sin(Date.now() / 700 + i * 0.8));
+        });
+
+      // Trigger shockwave if not already running
+      if (!shockwaveActive) triggerShockwave(ePos.x, ePos.y);
+    });
+
     return () => {
       m.off('move', render);
       m.off('zoom', render);
       m.off('resize', render);
       timer.stop();
+      stormTimer.stop();
+      shockwaveCircle.remove();
+      fogEllipse.remove();
+      windArrows.remove();
       svg.selectAll('*').remove();
     };
   }, [map, selectedNodeId]);
