@@ -191,6 +191,7 @@ export function D3Overlay({ map, selectedNodeId, nodes, stormActive, epicenterId
       .style('pointer-events', 'none');
 
     let shockwaveActive = false;
+    let shockwaveTimerId: ReturnType<typeof setTimeout> | null = null;
     function triggerShockwave(cx: number, cy: number) {
       if (shockwaveActive) return;
       shockwaveActive = true;
@@ -200,7 +201,7 @@ export function D3Overlay({ map, selectedNodeId, nodes, stormActive, epicenterId
         .on('end', () => {
           shockwaveActive = false;
           // Repeat while storm is active
-          if (stormActiveRef.current) setTimeout(() => {
+          if (stormActiveRef.current) shockwaveTimerId = setTimeout(() => {
             const eNode = nodesRef.current.find(n => n.id === epicenterIdRef.current);
             if (eNode && m) {
               const p = m.project([eNode.lng, eNode.lat]);
@@ -248,6 +249,7 @@ export function D3Overlay({ map, selectedNodeId, nodes, stormActive, epicenterId
       m.off('zoom', render);
       m.off('resize', render);
       timer.stop();
+      if (shockwaveTimerId !== null) clearTimeout(shockwaveTimerId);
       stormTimer.stop();
       shockwaveCircle.remove();
       fogEllipse.remove();
