@@ -50,7 +50,15 @@ Plans:
   3. Selecting a node shows live voltage and frequency charts in the sidebar, updating as new readings arrive
   4. Clicking "Simulate Storm Event" injects a fault into the data stream and nodes near the fault visibly change state within a few seconds
   5. If the WebSocket connection drops, the frontend reconnects automatically with exponential backoff (no manual refresh needed)
-**Plans**: TBD
+**Plans**: 6 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — FastAPI scaffold: topology REST endpoint, WebSocket broadcast loop, storm injection endpoint
+- [ ] 02-02-PLAN.md — InfluxDB client + synthetic sensor data generator (5s write interval)
+- [ ] 02-03-PLAN.md — Frontend REST fetch replacing hardcoded topology + WebSocket hook with exponential backoff
+- [ ] 02-04-PLAN.md — Live map node color updates from WebSocket + Storm Event button wired to backend
+- [ ] 02-05-PLAN.md — Voltage and frequency sparkline charts in sidebar using D3 v7
+- [ ] 02-06-PLAN.md — Human verification of all 5 Phase 2 success criteria
 
 ### Phase 3: XGBoost Anomaly Detection
 **Goal**: The dashboard detects and surfaces real ML-identified anomalies — the system moves from rule-based thresholds to an actual model
@@ -112,7 +120,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Frontend Shell | 4/4 | Complete   | 2026-02-24 |
-| 2. Backend & Data Pipeline | 0/TBD | Not started | - |
+| 2. Backend & Data Pipeline | 0/6 | Not started | - |
 | 3. XGBoost Anomaly Detection | 0/TBD | Not started | - |
 | 4. GNN Cascade Failure Prediction | 0/TBD | Not started | - |
 | 5. Federated Learning Simulation | 0/TBD | Not started | - |
