@@ -9,10 +9,10 @@
 
 ### Frontend Shell
 
-- [ ] **SHELL-01**: User sees a dark-themed dashboard with sidebar, header, map canvas, and status panel on page load
+- [x] **SHELL-01**: User sees a dark-themed dashboard with sidebar, header, map canvas, and status panel on page load
 - [ ] **SHELL-02**: Power nodes display status colors (green = normal, yellow = warning, red = critical) that update in real time
 - [ ] **SHELL-03**: Map legend is visible explaining node types and status color meanings
-- [ ] **SHELL-04**: Dashboard renders correctly at 1280px+ desktop viewport (no mobile requirement)
+- [x] **SHELL-04**: Dashboard renders correctly at 1280px+ desktop viewport (no mobile requirement)
 
 ### Map & Visualization
 
@@ -85,10 +85,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SHELL-01 | Phase 1 | Pending |
+| SHELL-01 | Phase 1 | Complete |
 | SHELL-02 | Phase 1 | Pending |
 | SHELL-03 | Phase 1 | Pending |
-| SHELL-04 | Phase 1 | Pending |
+| SHELL-04 | Phase 1 | Complete |
 | MAP-01 | Phase 1 | Pending |
 | MAP-02 | Phase 1 | Pending |
 | MAP-03 | Phase 1 | Pending |
@@ -120,4 +120,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-23*
-*Last updated: 2026-02-23 after roadmap creation*
+*Last updated: 2026-02-23 after Plan 01-01 completion (SHELL-01, SHELL-04 complete)*

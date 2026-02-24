@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 ## Current Position
 
 Phase: 1 of 7 (Frontend Shell)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-02-23 — Milestone v1.0 initialized; 7 requirements confirmed; Phase 1 roadmap approved
+Plan: 1 of 4 in current phase
+Status: In progress
+Last activity: 2026-02-23 — Completed Plan 01 (scaffold + layout shell)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 4%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: 15 min
+- Total execution time: 0.25 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-frontend-shell | 1/4 | 15min | 15min |
 
 **Recent Trend:**
-- Last 5 plans: none yet
+- Last 5 plans: 01-01 (15min)
 - Trend: -
 
 *Updated after each plan completion*
@@ -45,10 +45,14 @@ Recent decisions affecting current work:
 - [Init]: Use MapLibre GL JS (not Mapbox) — eliminates billing risk on a public portfolio URL; API-compatible drop-in replacement
 - [Init]: XGBoost before GNN — proves the full pipeline end-to-end with a fast interpretable model before adding GNN complexity
 - [Init]: FL via file checkpoint handoff — decoupled from real-time path; inference loop reloads weights on 60-second interval
+- [01-01]: Tailwind v3 over v4 — v4 has different config API and limited ecosystem support as of early 2026
+- [01-01]: tailwind.config.js (not .ts) — Tailwind v3 init generates .js by default; functionally equivalent
+- [01-01]: Named exports for all layout components — enables selective imports and easier testing
+- [01-01]: lucide-react for icons — consistent icon set, tree-shakeable, sizes cleanly with Tailwind
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
@@ -61,5 +65,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Roadmap written; REQUIREMENTS.md traceability updated; ready to plan Phase 1
+Stopped at: Completed 01-01-PLAN.md — scaffold + dark layout shell done; ready for Plan 02 (MapLibre map)
 Resume file: None

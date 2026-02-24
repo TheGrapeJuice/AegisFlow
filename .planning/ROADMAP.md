@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Vite + React + TailwindCSS scaffold and dark layout shell (sidebar, header, status panel)
+- [x] 01-01-PLAN.md — Vite + React + TailwindCSS scaffold and dark layout shell (sidebar, header, status panel)
 - [ ] 01-02-PLAN.md — MapLibre GL JS dark map with 24 hardcoded power nodes and distribution edge lines
 - [ ] 01-03-PLAN.md — D3 SVG overlay (pan/zoom sync), node detail panel, and map legend
 - [ ] 01-04-PLAN.md — Human verification of all Phase 1 success criteria
@@ -111,7 +111,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Frontend Shell | 0/4 | Not started | - |
+| 1. Frontend Shell | 1/4 | In progress | - |
 | 2. Backend & Data Pipeline | 0/TBD | Not started | - |
 | 3. XGBoost Anomaly Detection | 0/TBD | Not started | - |
 | 4. GNN Cascade Failure Prediction | 0/TBD | Not started | - |
