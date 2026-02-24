@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { GRID_TOPOLOGY } from '../../data/topology';
 import type { GridNode } from '../../types/grid';
+import { D3Overlay } from './D3Overlay';
 
 const STATUS_COLORS: Record<string, string> = {
   normal: '#22c55e',
@@ -12,11 +13,13 @@ const STATUS_COLORS: Record<string, string> = {
 
 interface GridMapProps {
   onNodeClick?: (node: GridNode) => void;
+  selectedNodeId?: string | null;
 }
 
-export function GridMap({ onNodeClick }: GridMapProps) {
+export function GridMap({ onNodeClick, selectedNodeId }: GridMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
+  const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
 
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
@@ -126,13 +129,24 @@ export function GridMap({ onNodeClick }: GridMapProps) {
       map.on('mouseleave', 'grid-nodes-layer', () => {
         map.getCanvas().style.cursor = '';
       });
+
+      // Expose map instance to React state for D3Overlay
+      setMapInstance(map);
     });
 
     return () => {
       map.remove();
       mapRef.current = null;
+      setMapInstance(null);
     };
   }, []);
 
-  return <div ref={mapContainerRef} className="absolute inset-0" />;
+  return (
+    <div className="absolute inset-0 relative">
+      <div ref={mapContainerRef} className="absolute inset-0" />
+      {mapInstance && (
+        <D3Overlay map={mapInstance} selectedNodeId={selectedNodeId ?? null} />
+      )}
+    </div>
+  );
 }

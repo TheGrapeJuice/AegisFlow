@@ -14,7 +14,7 @@ export function DashboardLayout() {
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
         <main className="flex-1 relative bg-grid-bg" id="map-canvas">
-          <GridMap onNodeClick={setSelectedNode} />
+          <GridMap onNodeClick={setSelectedNode} selectedNodeId={selectedNode?.id ?? null} />
         </main>
         <StatusPanel selectedNode={selectedNode} />
       </div>
