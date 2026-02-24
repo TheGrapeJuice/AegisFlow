@@ -24,8 +24,8 @@
 ### Backend & Data Pipeline
 
 - [x] **BACK-01**: FastAPI serves node topology (id, position, type, connections) as a REST endpoint consumed by the frontend on load
-- [ ] **BACK-02**: InfluxDB stores synthetic time-series sensor readings (voltage, frequency, load) with a retention policy set
-- [ ] **BACK-03**: Synthetic sensor data generator replays NREL/OPSD dataset at configurable speed to simulate a live sensor feed
+- [x] **BACK-02**: InfluxDB stores synthetic time-series sensor readings (voltage, frequency, load) with a retention policy set
+- [x] **BACK-03**: Synthetic sensor data generator replays NREL/OPSD dataset at configurable speed to simulate a live sensor feed
 - [x] **BACK-04**: Frontend receives real-time node state updates via WebSocket (no polling); reconnects automatically with exponential backoff
 
 ### Real-Time UX
@@ -94,8 +94,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MAP-03 | Phase 1 | Complete |
 | MAP-04 | Phase 4 | Pending |
 | BACK-01 | Phase 2 | Complete |
-| BACK-02 | Phase 2 | Pending |
-| BACK-03 | Phase 2 | Pending |
+| BACK-02 | Phase 2 | Complete |
+| BACK-03 | Phase 2 | Complete |
 | BACK-04 | Phase 2 | Complete |
 | UX-01 | Phase 2 | Pending |
 | UX-02 | Phase 2 | Pending |
