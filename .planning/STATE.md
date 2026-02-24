@@ -16,7 +16,7 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 **Last Activity:** 2026-02-24
 Last activity: 2026-02-24 — Completed Plan 04 (Phase 1 visual verification — all 5 criteria approved)
 
-**Progress:** [██████░░░░] 60%
+**Progress:** [███████░░░] 70%
 
 ## Performance Metrics
 
@@ -39,6 +39,7 @@ Last activity: 2026-02-24 — Completed Plan 04 (Phase 1 visual verification —
 | Phase 01-frontend-shell P04 | 1min | 1 tasks | 0 files |
 | Phase 02-backend-and-data-pipeline P01 | 3min | 2 tasks | 9 files |
 | Phase 02-backend-and-data-pipeline P02 | 2min | 2 tasks | 5 files |
+| Phase 02-backend-and-data-pipeline P03 | 7min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,9 @@ Recent decisions affecting current work:
 - [Phase 02-02]: Generator runs as separate process — WebSocket 1s loop and InfluxDB 5s writes on independent schedules
 - [Phase 02-02]: SYNCHRONOUS InfluxDB write API — simpler than async batching for demo scale
 - [Phase 02-02]: Flux pivot query — consolidates voltage/frequency/load fields into one result row per timestamp
+- [Phase 02-backend-and-data-pipeline]: mapLoaded boolean guard prevents setData() calls before GeoJSON sources exist in MapLibre
+- [Phase 02-backend-and-data-pipeline]: D3Overlay updated to accept nodes as prop — removes last GRID_TOPOLOGY reference from components tree
+- [Phase 02-backend-and-data-pipeline]: VITE_API_BASE / VITE_WS_BASE env vars with localhost fallbacks allow prod override without hardcoding
 
 ### Pending Todos
 
@@ -82,6 +86,6 @@ None.
 
 ## Session Continuity
 
-**Last session:** 2026-02-24T22:06:53.434Z
-**Stopped At:** Completed 02-02-PLAN.md — InfluxDB client and generator; state.py and ws.py created as Rule 3 fixes
+**Last session:** 2026-02-24T22:11:36.520Z
+**Stopped At:** Completed 02-03-PLAN.md — useTopology, useNodeWebSocket hooks; DashboardLayout wired with live data
 **Resume File:** None
