@@ -1,3 +1,5 @@
+import { DashboardLayout } from "./components/layout/DashboardLayout";
+
 export default function App() {
-  return <div>Loading...</div>;
+  return <DashboardLayout />;
 }
