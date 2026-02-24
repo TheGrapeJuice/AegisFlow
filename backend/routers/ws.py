@@ -37,7 +37,7 @@ async def _broadcast_loop():
                 await ws.send_json(payload)
             except Exception:
                 dead.add(ws)
-        _clients -= dead
+        _clients.difference_update(dead)
         await asyncio.sleep(1)
 
 

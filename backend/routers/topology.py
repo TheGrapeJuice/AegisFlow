@@ -19,4 +19,7 @@ async def get_node_history(node_id: str, minutes: int = 5) -> list[dict]:
     """Return the last N minutes of time-series readings for a node from InfluxDB."""
     if node_id not in NODE_STATES:
         raise HTTPException(status_code=404, detail=f"Node '{node_id}' not found")
-    return query_node_history(node_id, minutes=minutes)
+    try:
+        return query_node_history(node_id, minutes=minutes)
+    except Exception:
+        return []
