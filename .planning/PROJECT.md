@@ -8,6 +8,16 @@ AegisFlow is a portfolio project that simulates an AI-powered smart grid managem
 
 A live, visually compelling dashboard that makes AI-powered grid intelligence *feel* real — the kind of demo that gets paused during an interview so the interviewer can ask how it works.
 
+## Current Milestone: v1.0 Frontend Shell
+
+**Goal:** Build a visually compelling dark-themed dashboard with MapLibre map and D3 overlay — no backend required, all hardcoded data.
+
+**Target features:**
+- Dark-themed dashboard layout (sidebar, header, status panel)
+- MapLibre GL JS dark-styled map with power nodes and distribution lines
+- D3 graph overlay synchronized on pan/zoom
+- Node click to reveal detail panel
+
 ## Requirements
 
 ### Validated
@@ -69,4 +79,4 @@ Both a live deployment URL and a demo video are required — the URL proves it's
 | Recharts for charts | Simpler React integration than full D3 for charts; D3 reserved for the graph network | — Pending |
 
 ---
-*Last updated: 2026-02-23 after initialization*
+*Last updated: 2026-02-23 after milestone v1.0 started*
