@@ -12,7 +12,7 @@ Build a live, visually compelling AI-powered smart grid dashboard from the outsi
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Frontend Shell** - Dark-themed dashboard with MapLibre map and D3 overlay, no backend required
+- [x] **Phase 1: Frontend Shell** - Dark-themed dashboard with MapLibre map and D3 overlay, no backend required (completed 2026-02-24)
 - [ ] **Phase 2: Backend & Data Pipeline** - FastAPI + InfluxDB + WebSocket delivering live synthetic sensor data to the frontend
 - [ ] **Phase 3: XGBoost Anomaly Detection** - ML pipeline end-to-end: InfluxDB → XGBoost inference → anomaly alerts in the UI
 - [ ] **Phase 4: GNN Cascade Failure Prediction** - GNN cascade chain visualization, rerouting overlay, and confidence scores
@@ -111,7 +111,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Frontend Shell | 3/4 | In Progress|  |
+| 1. Frontend Shell | 4/4 | Complete   | 2026-02-24 |
 | 2. Backend & Data Pipeline | 0/TBD | Not started | - |
 | 3. XGBoost Anomaly Detection | 0/TBD | Not started | - |
 | 4. GNN Cascade Failure Prediction | 0/TBD | Not started | - |

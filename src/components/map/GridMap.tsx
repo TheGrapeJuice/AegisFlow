@@ -143,8 +143,8 @@ export function GridMap({ onNodeClick, selectedNodeId }: GridMapProps) {
   }, []);
 
   return (
-    <div className="absolute inset-0 relative">
-      <div ref={mapContainerRef} className="absolute inset-0" />
+    <div className="absolute inset-0">
+      <div ref={mapContainerRef} className="w-full h-full" />
       {mapInstance && <D3Overlay map={mapInstance} selectedNodeId={selectedNodeId ?? null} />}
       <MapLegend />
     </div>
