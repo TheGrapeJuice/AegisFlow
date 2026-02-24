@@ -1,4 +1,7 @@
 import type { GridNode } from '../../types/grid';
+import { NodeCharts } from '../sidebar/NodeCharts';
+import { useNodeHistory } from '../../hooks/useNodeHistory';
+import type { NodeReading } from '../../hooks/useNodeHistory';
 
 interface StatCardProps {
   label: string;
@@ -17,11 +20,17 @@ function StatCard({ label, value, subtext, valueColor = 'text-grid-text' }: Stat
   );
 }
 
-interface StatusPanelProps {
-  selectedNode?: GridNode | null;
+function NodeChartsWrapper({ selectedNodeId, latestReading }: { selectedNodeId: string; latestReading?: NodeReading | null }) {
+  const { readings, loading } = useNodeHistory({ selectedNodeId, latestReading });
+  return <NodeCharts readings={readings} loading={loading} />;
 }
 
-export function StatusPanel({ selectedNode }: StatusPanelProps) {
+interface StatusPanelProps {
+  selectedNode?: GridNode | null;
+  latestReading?: NodeReading | null;
+}
+
+export function StatusPanel({ selectedNode, latestReading }: StatusPanelProps) {
   return (
     <aside className="w-72 bg-grid-surface border-l border-grid-border flex flex-col p-3 gap-3 flex-shrink-0 overflow-y-auto">
       <StatCard
@@ -84,6 +93,10 @@ export function StatusPanel({ selectedNode }: StatusPanelProps) {
                   selectedNode.load > 75 ? 'text-yellow-400' : 'text-green-400'
                 }`}>{selectedNode.load}%</span>
               </div>
+            </div>
+            <div className="mt-2 border-t border-grid-border pt-2">
+              <p className="text-xs text-grid-muted uppercase tracking-wide mb-1">Live Charts</p>
+              <NodeChartsWrapper selectedNodeId={selectedNode.id} latestReading={latestReading} />
             </div>
           </div>
         ) : (

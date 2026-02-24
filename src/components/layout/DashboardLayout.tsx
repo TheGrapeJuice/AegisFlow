@@ -31,6 +31,17 @@ export function DashboardLayout() {
     return nodeMap.get(selectedNode.id) ?? selectedNode;
   }, [selectedNode, nodeMap]);
 
+  // Derive latest reading from the WebSocket node state for chart updates
+  const latestReading = useMemo(() => {
+    if (!liveSelectedNode) return null;
+    return {
+      time: new Date().toISOString(),
+      voltage: liveSelectedNode.voltage,
+      frequency: liveSelectedNode.frequency,
+      load: liveSelectedNode.load,
+    };
+  }, [liveSelectedNode]);
+
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-grid-bg">
@@ -52,7 +63,7 @@ export function DashboardLayout() {
             selectedNodeId={liveSelectedNode?.id ?? null}
           />
         </main>
-        <StatusPanel selectedNode={liveSelectedNode} />
+        <StatusPanel selectedNode={liveSelectedNode} latestReading={latestReading} />
       </div>
     </div>
   );
