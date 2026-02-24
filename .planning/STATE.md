@@ -16,7 +16,7 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 **Last Activity:** 2026-02-24
 Last activity: 2026-02-24 — Completed Plan 04 (Phase 1 visual verification — all 5 criteria approved)
 
-**Progress:** [██████████] 100%
+**Progress:** [██████░░░░] 60%
 
 ## Performance Metrics
 
@@ -37,6 +37,8 @@ Last activity: 2026-02-24 — Completed Plan 04 (Phase 1 visual verification —
 
 *Updated after each plan completion*
 | Phase 01-frontend-shell P04 | 1min | 1 tasks | 0 files |
+| Phase 02-backend-and-data-pipeline P01 | 3min | 2 tasks | 9 files |
+| Phase 02-backend-and-data-pipeline P02 | 2min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -59,6 +61,12 @@ Recent decisions affecting current work:
 - [01-03]: D3 SVG as decorative layer only (pointer-events: none) — MapLibre circle layer handles all click events
 - [01-03]: null narrowing via const m = map: required by TypeScript strict mode for closures inside useEffect
 - [Phase 01-frontend-shell]: Phase 1 approved on first submission: all 5 visual criteria confirmed without requiring any fixes
+- [Phase 02-backend-and-data-pipeline]: lifespan context manager over deprecated on_event for FastAPI 0.115 compatibility
+- [Phase 02-backend-and-data-pipeline]: shared NODE_STATES dict keyed by node id for O(1) access by broadcast loop and storm endpoint
+- [Phase 02-02]: InfluxDB OSS 2.7.x confirmed safe fallback (3.x not GA as of 2026)
+- [Phase 02-02]: Generator runs as separate process — WebSocket 1s loop and InfluxDB 5s writes on independent schedules
+- [Phase 02-02]: SYNCHRONOUS InfluxDB write API — simpler than async batching for demo scale
+- [Phase 02-02]: Flux pivot query — consolidates voltage/frequency/load fields into one result row per timestamp
 
 ### Pending Todos
 
@@ -74,6 +82,6 @@ None.
 
 ## Session Continuity
 
-**Last session:** 2026-02-24T07:06:41.466Z
-**Stopped At:** Completed 01-04-PLAN.md — Phase 1 visual verification approved; Phase 1 complete, ready for Phase 2
+**Last session:** 2026-02-24T22:06:53.434Z
+**Stopped At:** Completed 02-02-PLAN.md — InfluxDB client and generator; state.py and ws.py created as Rule 3 fixes
 **Resume File:** None
