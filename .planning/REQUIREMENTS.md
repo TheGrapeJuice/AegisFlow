@@ -11,14 +11,14 @@
 
 - [x] **SHELL-01**: User sees a dark-themed dashboard with sidebar, header, map canvas, and status panel on page load
 - [x] **SHELL-02**: Power nodes display status colors (green = normal, yellow = warning, red = critical) that update in real time
-- [ ] **SHELL-03**: Map legend is visible explaining node types and status color meanings
+- [x] **SHELL-03**: Map legend is visible explaining node types and status color meanings
 - [x] **SHELL-04**: Dashboard renders correctly at 1280px+ desktop viewport (no mobile requirement)
 
 ### Map & Visualization
 
 - [x] **MAP-01**: MapLibre GL JS base map renders a dark-styled city grid as the spatial canvas (not Mapbox — avoids billing risk)
-- [ ] **MAP-02**: D3.js graph overlay renders power nodes as dots and distribution routes as connecting lines on top of the map, synchronized on pan/zoom
-- [ ] **MAP-03**: User can click a node to see its name, type, and current sensor readings in a detail panel
+- [x] **MAP-02**: D3.js graph overlay renders power nodes as dots and distribution routes as connecting lines on top of the map, synchronized on pan/zoom
+- [x] **MAP-03**: User can click a node to see its name, type, and current sensor readings in a detail panel
 - [ ] **MAP-04**: When a cascade failure is predicted, nodes in the propagation chain highlight in sequence with a timing label (e.g., "~4 min")
 
 ### Backend & Data Pipeline
@@ -87,11 +87,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | SHELL-01 | Phase 1 | Complete |
 | SHELL-02 | Phase 1 | Complete |
-| SHELL-03 | Phase 1 | Pending |
+| SHELL-03 | Phase 1 | Complete |
 | SHELL-04 | Phase 1 | Complete |
 | MAP-01 | Phase 1 | Complete |
-| MAP-02 | Phase 1 | Pending |
-| MAP-03 | Phase 1 | Pending |
+| MAP-02 | Phase 1 | Complete |
+| MAP-03 | Phase 1 | Complete |
 | MAP-04 | Phase 4 | Pending |
 | BACK-01 | Phase 2 | Pending |
 | BACK-02 | Phase 2 | Pending |
