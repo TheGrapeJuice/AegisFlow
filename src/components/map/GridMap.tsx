@@ -4,6 +4,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { GRID_TOPOLOGY } from '../../data/topology';
 import type { GridNode } from '../../types/grid';
 import { D3Overlay } from './D3Overlay';
+import { MapLegend } from './MapLegend';
 
 const STATUS_COLORS: Record<string, string> = {
   normal: '#22c55e',
@@ -144,9 +145,8 @@ export function GridMap({ onNodeClick, selectedNodeId }: GridMapProps) {
   return (
     <div className="absolute inset-0 relative">
       <div ref={mapContainerRef} className="absolute inset-0" />
-      {mapInstance && (
-        <D3Overlay map={mapInstance} selectedNodeId={selectedNodeId ?? null} />
-      )}
+      {mapInstance && <D3Overlay map={mapInstance} selectedNodeId={selectedNodeId ?? null} />}
+      <MapLegend />
     </div>
   );
 }

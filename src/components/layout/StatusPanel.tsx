@@ -55,33 +55,35 @@ export function StatusPanel({ selectedNode }: StatusPanelProps) {
           Node Detail
         </p>
         {selectedNode ? (
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-grid-text">{selectedNode.name}</p>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-grid-muted uppercase tracking-wider">Node</span>
+              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                selectedNode.status === 'normal' ? 'bg-green-500/20 text-green-400' :
+                selectedNode.status === 'warning' ? 'bg-yellow-500/20 text-yellow-400' :
+                'bg-red-500/20 text-red-400'
+              }`}>
+                {selectedNode.status.toUpperCase()}
+              </span>
+            </div>
+            <p className="text-sm font-semibold text-grid-text">{selectedNode.name}</p>
             <p className="text-xs text-grid-muted capitalize">{selectedNode.type}</p>
-            <div className="mt-2 space-y-1">
-              <p className="text-xs text-grid-muted">
-                Status:{' '}
-                <span
-                  className={
-                    selectedNode.status === 'normal'
-                      ? 'text-node-normal'
-                      : selectedNode.status === 'warning'
-                        ? 'text-node-warning'
-                        : 'text-node-critical'
-                  }
-                >
-                  {selectedNode.status}
-                </span>
-              </p>
-              <p className="text-xs text-grid-muted">
-                Voltage: <span className="text-grid-text">{selectedNode.voltage} kV</span>
-              </p>
-              <p className="text-xs text-grid-muted">
-                Frequency: <span className="text-grid-text">{selectedNode.frequency} Hz</span>
-              </p>
-              <p className="text-xs text-grid-muted">
-                Load: <span className="text-grid-text">{selectedNode.load}%</span>
-              </p>
+            <div className="mt-2 flex flex-col gap-1.5 border-t border-grid-border pt-2">
+              <div className="flex justify-between text-xs">
+                <span className="text-grid-muted">Voltage</span>
+                <span className="text-grid-text font-mono">{selectedNode.voltage} kV</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-grid-muted">Frequency</span>
+                <span className="text-grid-text font-mono">{selectedNode.frequency.toFixed(2)} Hz</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-grid-muted">Load</span>
+                <span className={`font-mono text-xs ${
+                  selectedNode.load > 90 ? 'text-red-400' :
+                  selectedNode.load > 75 ? 'text-yellow-400' : 'text-green-400'
+                }`}>{selectedNode.load}%</span>
+              </div>
             </div>
           </div>
         ) : (
