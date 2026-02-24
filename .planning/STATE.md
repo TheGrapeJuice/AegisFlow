@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 ## Current Position
 
 Phase: 1 of 7 (Frontend Shell)
-Plan: 1 of 4 in current phase
+Plan: 2 of 4 in current phase
 Status: In progress
-Last activity: 2026-02-23 — Completed Plan 01 (scaffold + layout shell)
+Last activity: 2026-02-24 — Completed Plan 02 (MapLibre dark map with node dots and edge lines)
 
-Progress: [█░░░░░░░░░] 4%
+Progress: [██░░░░░░░░] 8%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 15 min
-- Total execution time: 0.25 hours
+- Total plans completed: 2
+- Average duration: 9 min
+- Total execution time: 0.30 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-frontend-shell | 1/4 | 15min | 15min |
+| 01-frontend-shell | 2/4 | 18min | 9min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (15min)
-- Trend: -
+- Last 5 plans: 01-01 (15min), 01-02 (3min)
+- Trend: improving
 
 *Updated after each plan completion*
 
@@ -49,6 +49,9 @@ Recent decisions affecting current work:
 - [01-01]: tailwind.config.js (not .ts) — Tailwind v3 init generates .js by default; functionally equivalent
 - [01-01]: Named exports for all layout components — enables selective imports and easier testing
 - [01-01]: lucide-react for icons — consistent icon set, tree-shakeable, sizes cleanly with Tailwind
+- [01-02]: Direct MapLibre API (not react-map-gl) — avoids wrapper complexity for D3 overlay integration in Plan 03
+- [01-02]: maplibre-gl@4.7.1 ships own types — @types/maplibre-gl not needed, would cause conflicts
+- [01-02]: CARTO Dark Matter basemap — free, no API key, visually correct dark style for ops dashboard
 
 ### Pending Todos
 
@@ -58,12 +61,12 @@ None.
 
 - [Pre-build]: Verify PyTorch / PyG / CUDA version compatibility matrix before any Python environment creation (single highest-risk step)
 - [Pre-build]: Verify InfluxDB 3.x OSS GA status — safe fallback is OSS 2.7.x
-- [Pre-build]: Verify deck.gl 9.x + MapLibre 4.x peer dependencies before installing
+- [Pre-build]: Verify deck.gl 9.x + MapLibre 4.x peer dependencies before installing (deck.gl 9.x blocker now less relevant — plan uses D3 SVG overlay, not deck.gl)
 - [Phase 4]: GNN architecture selection (GraphSAGE vs GATConv) benefits from a research-phase during planning
 - [Phase 5]: Flower 1.x ClientApp/ServerApp API is a major redesign from 0.x — benefits from a research-phase during planning
 
 ## Session Continuity
 
-Last session: 2026-02-23
-Stopped at: Completed 01-01-PLAN.md — scaffold + dark layout shell done; ready for Plan 02 (MapLibre map)
+Last session: 2026-02-24
+Stopped at: Completed 01-02-PLAN.md — MapLibre dark map with 24 nodes and 39 edges; ready for Plan 03
 Resume file: None
