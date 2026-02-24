@@ -16,7 +16,7 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 **Last Activity:** 2026-02-24
 Last activity: 2026-02-24 — Completed Plan 04 (Phase 1 visual verification — all 5 criteria approved)
 
-**Progress:** [████████░░] 80%
+**Progress:** [█████████░] 90%
 
 ## Performance Metrics
 
@@ -41,6 +41,7 @@ Last activity: 2026-02-24 — Completed Plan 04 (Phase 1 visual verification —
 | Phase 02-backend-and-data-pipeline P02 | 2min | 2 tasks | 5 files |
 | Phase 02-backend-and-data-pipeline P03 | 7min | 2 tasks | 7 files |
 | Phase 02-backend-and-data-pipeline P04 | 1min | 2 tasks | 2 files |
+| Phase 02-backend-and-data-pipeline P05 | 1min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,8 @@ Recent decisions affecting current work:
 - [Phase 02-backend-and-data-pipeline]: VITE_API_BASE / VITE_WS_BASE env vars with localhost fallbacks allow prod override without hardcoding
 - [Phase 02-backend-and-data-pipeline]: handleStormEvent in DashboardLayout keeps fetch logic colocated with other API calls and Sidebar remains pure UI
 - [Phase 02-backend-and-data-pipeline]: GridMap live setData useEffect complete from Plan 03 — no GridMap changes needed in Plan 04
+- [Phase 02-backend-and-data-pipeline]: NodeChartsWrapper inner component in StatusPanel — React hooks rules require hook calls at component top level; inner component pattern avoids conditional hook calls
+- [Phase 02-backend-and-data-pipeline]: latestReading derived via useMemo from liveSelectedNode in DashboardLayout — keeps useNodeHistory hook pure (no direct WebSocket access) while enabling real-time chart extension
 
 ### Pending Todos
 
@@ -89,6 +92,6 @@ None.
 
 ## Session Continuity
 
-**Last session:** 2026-02-24T22:14:17.701Z
-**Stopped At:** Completed 02-04-PLAN.md — Storm Event button wired; GridMap live updates confirmed from Plan 03
+**Last session:** 2026-02-24T22:15:35.918Z
+**Stopped At:** Completed 02-05-PLAN.md — useNodeHistory hook and NodeCharts D3 sparklines
 **Resume File:** None

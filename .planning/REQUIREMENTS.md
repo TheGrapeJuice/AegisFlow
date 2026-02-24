@@ -31,7 +31,7 @@
 ### Real-Time UX
 
 - [x] **UX-01**: "Simulate Storm Event" button injects a fault into the data stream, triggering anomaly detection and cascade prediction
-- [ ] **UX-02**: Sidebar displays live voltage and frequency charts for the selected node, updating via WebSocket stream
+- [x] **UX-02**: Sidebar displays live voltage and frequency charts for the selected node, updating via WebSocket stream
 - [ ] **UX-03**: Anomaly alert panel shows a timestamped list of detected anomalies; alerts can be dismissed
 - [ ] **UX-04**: When a rerouting path is recommended, it highlights in blue on the map overlay
 
@@ -98,7 +98,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BACK-03 | Phase 2 | Complete |
 | BACK-04 | Phase 2 | Complete |
 | UX-01 | Phase 2 | Complete |
-| UX-02 | Phase 2 | Pending |
+| UX-02 | Phase 2 | Complete |
 | UX-03 | Phase 3 | Pending |
 | UX-04 | Phase 4 | Pending |
 | ML-01 | Phase 3 | Pending |
