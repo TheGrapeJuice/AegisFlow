@@ -11,8 +11,8 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 
 Phase: 1 of 7 (Frontend Shell)
 Plan: 0 of TBD in current phase
-Status: Defining requirements
-Last activity: 2026-02-23 — Milestone v1.0 started (Frontend Shell only; phases 2–7 deferred to future milestones)
+Status: Ready to plan
+Last activity: 2026-02-23 — Milestone v1.0 initialized; 7 requirements confirmed; Phase 1 roadmap approved
 
 Progress: [░░░░░░░░░░] 0%
 

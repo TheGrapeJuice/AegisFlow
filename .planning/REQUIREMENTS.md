@@ -3,6 +3,8 @@
 **Defined:** 2026-02-23
 **Core Value:** A live, visually compelling dashboard that makes AI-powered grid intelligence *feel* real — the kind of demo that gets paused during an interview so the interviewer can ask how it works.
 
+**Milestone v1.0 scope:** Phase 1 only — SHELL-01 through MAP-03 (7 requirements). Backend, ML, FL, and deployment requirements are in phases 2–7, scoped to future milestones.
+
 ## v1 Requirements
 
 ### Frontend Shell
