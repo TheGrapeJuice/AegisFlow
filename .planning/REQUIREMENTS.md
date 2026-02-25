@@ -37,7 +37,7 @@
 
 ### ML — Anomaly Detection
 
-- [ ] **ML-01**: XGBoost model detects abnormal voltage/frequency readings in the InfluxDB time-series stream and flags affected nodes
+- [x] **ML-01**: XGBoost model detects abnormal voltage/frequency readings in the InfluxDB time-series stream and flags affected nodes
 - [ ] **ML-02**: When XGBoost flags an anomaly, PyTorch Geometric GNN (GraphSAGE architecture) predicts the cascade failure propagation path through the node graph
 - [ ] **ML-03**: GNN output includes a confidence score and estimated time-to-cascade for each at-risk node in the chain
 - [ ] **ML-04**: System recommends which nodes to shed load from based on GNN propagation predictions
@@ -101,7 +101,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UX-02 | Phase 2 | Complete |
 | UX-03 | Phase 3 | Pending |
 | UX-04 | Phase 4 | Pending |
-| ML-01 | Phase 3 | Pending |
+| ML-01 | Phase 3 | Complete |
 | ML-02 | Phase 4 | Pending |
 | ML-03 | Phase 4 | Pending |
 | ML-04 | Phase 4 | Pending |
