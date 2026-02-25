@@ -86,7 +86,14 @@ Plans:
   2. Each at-risk node displays a confidence score (e.g., "87% cascade risk") rather than a binary flag
   3. A recommended rerouting path highlights in blue on the map overlay
   4. The cascade visualization only triggers on a state change, not on every WebSocket tick (no animation flicker)
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — PyTorch Geometric GCN training script, gnn_model.pt artifact, predict_cascade() inference module with Dijkstra rerouting
+- [ ] 04-02-PLAN.md — Backend _cascade_loop background task, /api/cascade REST endpoint, cascade_risk in WebSocket payload
+- [ ] 04-03-PLAN.md — Frontend cascade map visualization: amber D3 pulse animation, timing labels, confidence badges, blue rerouting MapLibre layer
+- [ ] 04-04-PLAN.md — CascadePanel sidebar component, DashboardLayout cascade state wiring, 30s auto-fade
+- [ ] 04-05-PLAN.md — Human verification of all 4 Phase 4 success criteria
 
 ### Phase 5: Federated Learning Simulation
 **Goal**: Three geographically distinct simulated utility clients train a shared model, and the dashboard makes that training visible
@@ -128,7 +135,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. Frontend Shell | 4/4 | Complete   | 2026-02-24 |
 | 2. Backend & Data Pipeline | 6/6 | Complete   | 2026-02-25 |
 | 3. XGBoost Anomaly Detection | 4/4 | Complete   | 2026-02-25 |
-| 4. GNN Cascade Failure Prediction | 0/TBD | Not started | - |
+| 4. GNN Cascade Failure Prediction | 0/5 | Not started | - |
 | 5. Federated Learning Simulation | 0/TBD | Not started | - |
 | 6. Deployment | 0/TBD | Not started | - |
 | 7. Demo Assets | 0/TBD | Not started | - |
