@@ -13,7 +13,7 @@ Build a live, visually compelling AI-powered smart grid dashboard from the outsi
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Frontend Shell** - Dark-themed dashboard with MapLibre map and D3 overlay, no backend required (completed 2026-02-24)
-- [ ] **Phase 2: Backend & Data Pipeline** - FastAPI + InfluxDB + WebSocket delivering live synthetic sensor data to the frontend
+- [x] **Phase 2: Backend & Data Pipeline** - FastAPI + InfluxDB + WebSocket delivering live synthetic sensor data to the frontend (completed 2026-02-25)
 - [ ] **Phase 3: XGBoost Anomaly Detection** - ML pipeline end-to-end: InfluxDB → XGBoost inference → anomaly alerts in the UI
 - [ ] **Phase 4: GNN Cascade Failure Prediction** - GNN cascade chain visualization, rerouting overlay, and confidence scores
 - [ ] **Phase 5: Federated Learning Simulation** - Flower FL simulation with 3 partitioned clients and live training progress panel
@@ -69,7 +69,13 @@ Plans:
   2. The anomaly alert panel shows a timestamped list of XGBoost-detected anomalies with node identifiers
   3. Anomaly alerts can be individually dismissed from the panel
   4. The inference loop runs asynchronously and does not block WebSocket message delivery (no visible lag spike on storm trigger)
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — XGBoost training script, model artifact, inference module, NodeState model extension
+- [ ] 03-02-PLAN.md — Wire inference background task into FastAPI lifespan; extend WebSocket payload
+- [ ] 03-03-PLAN.md — Frontend: GridNode type extension, AnomalyPanel overlay, DashboardLayout alert wiring
+- [ ] 03-04-PLAN.md — Human verification of all 4 Phase 3 success criteria
 
 ### Phase 4: GNN Cascade Failure Prediction
 **Goal**: The dashboard predicts and visualizes how a fault propagates through the grid — the GNN turns anomaly detection into actionable foresight
@@ -120,7 +126,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Frontend Shell | 4/4 | Complete   | 2026-02-24 |
-| 2. Backend & Data Pipeline | 5/6 | In Progress|  |
+| 2. Backend & Data Pipeline | 6/6 | Complete   | 2026-02-25 |
 | 3. XGBoost Anomaly Detection | 0/TBD | Not started | - |
 | 4. GNN Cascade Failure Prediction | 0/TBD | Not started | - |
 | 5. Federated Learning Simulation | 0/TBD | Not started | - |
