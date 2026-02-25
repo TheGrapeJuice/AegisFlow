@@ -3,42 +3,16 @@ import { NodeCharts } from '../sidebar/NodeCharts';
 import { useNodeHistory } from '../../hooks/useNodeHistory';
 import type { NodeReading } from '../../hooks/useNodeHistory';
 import type { EventEntry } from '../../hooks/useEventFeed';
+import { AnomalyPanel } from './AnomalyPanel';
+import type { AnomalyAlert } from './AnomalyPanel';
 
-const ACCENT: Record<string, string> = {
-  green:  'border-l-4 border-l-green-500',
-  yellow: 'border-l-4 border-l-yellow-500',
-  red:    'border-l-4 border-l-red-500',
-  blue:   'border-l-4 border-l-blue-500',
-};
-
-interface StatCardProps {
-  label: string;
-  value: string;
-  subtext: string;
-  valueColor?: string;
-  accentColor?: 'green' | 'yellow' | 'red' | 'blue';
-  progressValue?: number;
-  pulse?: boolean;
-}
-
-function StatCard({ label, value, subtext, valueColor = 'text-grid-text', accentColor, progressValue, pulse }: StatCardProps) {
-  return (
-    <div className={`rounded-lg p-3 border border-grid-border bg-grid-bg/80 backdrop-blur-sm ${accentColor ? ACCENT[accentColor] : ''} ${pulse ? 'animate-pulse' : ''}`}>
-      <p className="text-xs text-grid-muted uppercase tracking-wide mb-1">{label}</p>
-      <p className={`text-2xl font-bold ${valueColor}`}>{value}</p>
-      <p className="text-xs text-grid-muted mt-1">{subtext}</p>
-      {progressValue !== undefined && (
-        <div className="mt-2 h-1 bg-grid-border rounded-full overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all duration-500 ${
-              progressValue >= 90 ? 'bg-red-500' : progressValue >= 75 ? 'bg-yellow-500' : 'bg-green-500'
-            }`}
-            style={{ width: `${progressValue}%` }}
-          />
-        </div>
-      )}
-    </div>
-  );
+interface StatusPanelProps {
+  selectedNode?: GridNode | null;
+  latestReading?: NodeReading | null;
+  events?: EventEntry[];
+  anomalyAlerts?: AnomalyAlert[];
+  onDismissAlert?: (nodeId: string) => void;
+  onDismissAll?: () => void;
 }
 
 function NodeChartsWrapper({ selectedNodeId, latestReading }: { selectedNodeId: string; latestReading?: NodeReading | null }) {
@@ -46,46 +20,53 @@ function NodeChartsWrapper({ selectedNodeId, latestReading }: { selectedNodeId: 
   return <NodeCharts readings={readings} loading={loading} />;
 }
 
-interface StatusPanelProps {
-  selectedNode?: GridNode | null;
-  latestReading?: NodeReading | null;
-  events?: EventEntry[];
-}
-
-export function StatusPanel({ selectedNode, latestReading, events }: StatusPanelProps) {
+export function StatusPanel({ selectedNode, latestReading, events, anomalyAlerts = [], onDismissAlert, onDismissAll }: StatusPanelProps) {
   return (
     <aside
       className="w-72 bg-grid-surface border-l border-grid-border flex flex-col p-3 gap-3 flex-shrink-0 overflow-y-auto"
       style={{ boxShadow: '-4px 0 24px rgba(59,130,246,0.07)' }}
     >
-      <StatCard
-        label="Active Nodes"
-        value="24"
-        subtext="Total nodes online"
-        accentColor="green"
-      />
-      <StatCard
-        label="Anomalies"
-        value="0"
-        subtext="Last 5 minutes"
-        valueColor="text-node-normal"
-        accentColor="green"
-      />
-      <StatCard
-        label="Grid Load"
-        value="87%"
-        subtext="System capacity"
-        valueColor="text-node-warning"
-        accentColor="yellow"
-        progressValue={87}
-      />
-      <StatCard
-        label="FL Round"
-        value="--"
-        subtext="Training inactive"
-        valueColor="text-grid-muted"
-        accentColor="blue"
-      />
+      {/* Anomaly alerts — only shown when alerts exist */}
+      {anomalyAlerts.length > 0 && (
+        <AnomalyPanel
+          alerts={anomalyAlerts}
+          onDismiss={onDismissAlert ?? (() => {})}
+          onDismissAll={onDismissAll}
+        />
+      )}
+
+      {/* Event feed */}
+      <div className="border-t border-grid-border pt-3 first:border-t-0 first:pt-0">
+        <p className="text-xs font-semibold text-grid-text uppercase tracking-wide mb-2">
+          Event Log
+        </p>
+        {events && events.length > 0 ? (
+          <div className="flex flex-col gap-1.5 max-h-36 overflow-y-auto">
+            {events.map((event, i) => (
+              <div
+                key={event.id}
+                className="flex items-center justify-between text-xs gap-1"
+                style={{ opacity: Math.max(0.3, 1 - i * 0.08) }}
+              >
+                <span className="text-grid-muted truncate w-14 flex-shrink-0">
+                  {event.nodeName.split(' ').slice(0, 2).join(' ')}
+                </span>
+                <span className={`flex-shrink-0 ${
+                  event.to === 'critical' ? 'text-red-400' :
+                  event.to === 'warning'  ? 'text-yellow-400' : 'text-green-400'
+                }`}>
+                  {event.from} → {event.to}
+                </span>
+                <span className="text-grid-muted font-mono text-[10px] flex-shrink-0">
+                  {event.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs text-grid-muted italic">No state changes yet</p>
+        )}
+      </div>
 
       {/* Node detail section */}
       <div className="border-t border-grid-border pt-3">
@@ -109,7 +90,7 @@ export function StatusPanel({ selectedNode, latestReading, events }: StatusPanel
             <p className="text-sm font-semibold text-grid-text">{selectedNode.name}</p>
             <p className="text-xs text-grid-muted capitalize">{selectedNode.type}</p>
             <div className="mt-2 flex flex-col gap-2 border-t border-grid-border pt-2">
-              {/* Voltage deviation bar — nominal 120kV, ±20kV range */}
+              {/* Voltage deviation bar */}
               <div className="flex items-center gap-2 text-xs">
                 <span className="text-grid-muted w-16 flex-shrink-0">Voltage</span>
                 <div className="flex-1 h-1 bg-grid-border rounded-full overflow-hidden relative">
@@ -132,7 +113,7 @@ export function StatusPanel({ selectedNode, latestReading, events }: StatusPanel
                 </span>
               </div>
 
-              {/* Frequency deviation bar — nominal 60Hz, ±1Hz range */}
+              {/* Frequency deviation bar */}
               <div className="flex items-center gap-2 text-xs">
                 <span className="text-grid-muted w-16 flex-shrink-0">Frequency</span>
                 <div className="flex-1 h-1 bg-grid-border rounded-full overflow-hidden relative">
@@ -182,38 +163,6 @@ export function StatusPanel({ selectedNode, latestReading, events }: StatusPanel
           </div>
         ) : (
           <p className="text-xs text-grid-muted italic">Click a node to inspect</p>
-        )}
-      </div>
-      {/* Event feed */}
-      <div className="border-t border-grid-border pt-3">
-        <p className="text-xs font-semibold text-grid-text uppercase tracking-wide mb-2">
-          Event Log
-        </p>
-        {events && events.length > 0 ? (
-          <div className="flex flex-col gap-1.5 max-h-36 overflow-y-auto">
-            {events.map((event, i) => (
-              <div
-                key={event.id}
-                className="flex items-center justify-between text-xs gap-1"
-                style={{ opacity: Math.max(0.3, 1 - i * 0.08) }}
-              >
-                <span className="text-grid-muted truncate w-14 flex-shrink-0">
-                  {event.nodeName.split(' ').slice(0, 2).join(' ')}
-                </span>
-                <span className={`flex-shrink-0 ${
-                  event.to === 'critical' ? 'text-red-400' :
-                  event.to === 'warning'  ? 'text-yellow-400' : 'text-green-400'
-                }`}>
-                  {event.from} → {event.to}
-                </span>
-                <span className="text-grid-muted font-mono text-[10px] flex-shrink-0">
-                  {event.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
-                </span>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-xs text-grid-muted italic">No state changes yet</p>
         )}
       </div>
     </aside>
