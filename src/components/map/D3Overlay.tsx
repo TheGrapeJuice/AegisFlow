@@ -51,7 +51,6 @@ export function D3Overlay({ map, selectedNodeId, nodes, stormActive, epicenterId
 
     const glowLayer = svg.select<SVGGElement>('g.glow-layer');
     const labelLayer = svg.select<SVGGElement>('g.label-layer');
-    const selectionLayer = svg.select<SVGGElement>('g.selection-layer');
 
     function project(node: GridNode) {
       const point = m.project([node.lng, node.lat]);
@@ -101,24 +100,7 @@ export function D3Overlay({ map, selectedNodeId, nodes, stormActive, epicenterId
 
       labels.exit().remove();
 
-      // Selection ring
-      const rings = selectionLayer.selectAll<SVGCircleElement, GridNode>('circle.selection-ring')
-        .data(selectedNodeId ? currentNodes.filter(n => n.id === selectedNodeId) : [], d => d.id);
 
-      rings.enter()
-        .append('circle')
-        .attr('class', 'selection-ring')
-        .style('pointer-events', 'none')
-        .attr('fill', 'none')
-        .attr('stroke', '#3b82f6')
-        .attr('stroke-width', 2)
-        .attr('stroke-dasharray', '4 2')
-        .attr('r', 16)
-        .merge(rings as any)
-        .attr('cx', d => project(d).x)
-        .attr('cy', d => project(d).y);
-
-      rings.exit().remove();
     }
 
     render();
