@@ -11,6 +11,8 @@ export interface GridNode {
   voltage: number;      // kV (hardcoded, realistic: 110-345 kV for substations)
   frequency: number;    // Hz (hardcoded, ~60.0 ± 0.5 Hz)
   load: number;         // % capacity (0-100)
+  anomaly_score?: number;   // XGBoost positive-class probability [0, 1]; undefined before first inference cycle
+  is_anomalous?: boolean;   // true when anomaly_score > 0.5
 }
 
 export interface GridEdge {
