@@ -40,7 +40,10 @@ export function Sidebar({ onStormEvent, stormActive }: SidebarProps) {
   };
 
   return (
-    <aside className="w-56 bg-grid-surface border-r border-grid-border flex flex-col flex-shrink-0">
+    <aside
+      className="w-56 border-r border-grid-border flex flex-col flex-shrink-0"
+      style={{ background: 'linear-gradient(to bottom, #1a2130, #161b27)' }}
+    >
       {/* Nav items */}
       <nav className="flex flex-col gap-1 p-2 flex-1">
         {navItems.map((item) => {
@@ -48,6 +51,7 @@ export function Sidebar({ onStormEvent, stormActive }: SidebarProps) {
           return (
             <button
               key={item.label}
+              style={item.active ? { boxShadow: 'inset 3px 0 10px rgba(59,130,246,0.2)' } : undefined}
               className={
                 item.active
                   ? "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium bg-blue-500/10 text-blue-400 border-r-2 border-blue-500 w-full text-left"
@@ -73,7 +77,7 @@ export function Sidebar({ onStormEvent, stormActive }: SidebarProps) {
               ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30'
               : lastResult === 'error'
               ? 'bg-red-500/20 text-red-400'
-              : 'bg-orange-500/20 text-orange-400 hover:bg-orange-500/30'
+              : 'bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 border border-orange-500/20'
             }`}
         >
           {loading
@@ -82,7 +86,7 @@ export function Sidebar({ onStormEvent, stormActive }: SidebarProps) {
             ? '⚡ Stop Storm'
             : lastResult === 'error'
             ? 'Failed'
-            : 'Simulate Storm Event'}
+            : '⚡ Simulate Storm Event'}
         </button>
       </div>
 
