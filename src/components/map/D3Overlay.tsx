@@ -4,9 +4,9 @@ import type maplibregl from 'maplibre-gl';
 import type { GridNode } from '../../types/grid';
 
 const STATUS_GLOW: Record<string, { color: string; minOpacity: number; maxOpacity: number; minR: number; maxR: number; period: number }> = {
-  normal:   { color: '#22c55e', minOpacity: 0.06, maxOpacity: 0.18, minR: 2, maxR: 5,  period: 3000 },
-  warning:  { color: '#eab308', minOpacity: 0.12, maxOpacity: 0.32, minR: 3, maxR: 8,  period: 2000 },
-  critical: { color: '#ef4444', minOpacity: 0.20, maxOpacity: 0.50, minR: 4, maxR: 11, period: 1000 },
+  normal:   { color: '#22c55e', minOpacity: 0.14, maxOpacity: 0.30, minR: 2, maxR: 6,  period: 4000 },
+  warning:  { color: '#eab308', minOpacity: 0.20, maxOpacity: 0.45, minR: 3, maxR: 9,  period: 2000 },
+  critical: { color: '#ef4444', minOpacity: 0.28, maxOpacity: 0.60, minR: 4, maxR: 12, period: 900  },
 };
 
 const BASE_RADIUS: Record<string, number> = {
@@ -127,11 +127,20 @@ export function D3Overlay({ map, selectedNodeId, nodes, stormActive, epicenterId
     m.on('resize', render);
 
     // Continuous glow animation via d3.timer
+    // Each node gets a stable phase offset derived from its id so they never all
+    // hit minimum opacity simultaneously.
+    function nodePhase(id: string): number {
+      let h = 0;
+      for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) & 0xffff;
+      return (h / 0xffff) * 2 * Math.PI; // 0 .. 2π
+    }
+
     const timer = d3.timer((elapsed) => {
       glowLayer.selectAll<SVGCircleElement, GridNode>('circle.glow')
         .each(function(d) {
           const cfg = STATUS_GLOW[d.status] ?? STATUS_GLOW.normal;
-          const t = (Math.sin((elapsed / cfg.period) * 2 * Math.PI) + 1) / 2; // 0..1 sine wave
+          const phase = nodePhase(d.id);
+          const t = (Math.sin((elapsed / cfg.period) * 2 * Math.PI + phase) + 1) / 2; // 0..1
           const r = BASE_RADIUS[d.type] ?? 6;
           d3.select(this)
             .attr('r', r + cfg.minR + t * (cfg.maxR - cfg.minR))
