@@ -4,6 +4,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import type { GridNode, GridEdge } from '../../types/grid';
 import { D3Overlay } from './D3Overlay';
 import { MapLegend } from './MapLegend';
+import { StormCanvas } from './StormCanvas';
 
 const STATUS_COLORS: Record<string, string> = {
   normal: '#22c55e',
@@ -14,8 +15,11 @@ const STATUS_COLORS: Record<string, string> = {
 interface GridMapProps {
   nodes: GridNode[];
   edges: GridEdge[];
-  onNodeClick?: (node: GridNode) => void;
+  onNodeClick?: (node: GridNode | null) => void;
   selectedNodeId?: string | null;
+  stormActive?: boolean;
+  epicenterId?: string | null;
+  affectedNodeIds?: string[];
 }
 
 function nodesToGeoJSON(nodes: GridNode[]) {
@@ -62,7 +66,7 @@ function edgesToGeoJSON(nodes: GridNode[], edges: GridEdge[]) {
   };
 }
 
-export function GridMap({ nodes, edges, onNodeClick, selectedNodeId }: GridMapProps) {
+export function GridMap({ nodes, edges, onNodeClick, selectedNodeId, stormActive, epicenterId, affectedNodeIds }: GridMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
@@ -133,6 +137,14 @@ export function GridMap({ nodes, edges, onNodeClick, selectedNodeId }: GridMapPr
         onNodeClick?.(props);
       });
 
+      // Deselect when clicking map background (not on a node)
+      map.on('click', e => {
+        const features = map.queryRenderedFeatures(e.point, { layers: ['grid-nodes-layer'] });
+        if (features.length === 0) {
+          onNodeClick?.(null);
+        }
+      });
+
       // Pointer cursor on hover
       map.on('mouseenter', 'grid-nodes-layer', () => {
         map.getCanvas().style.cursor = 'pointer';
@@ -164,15 +176,49 @@ export function GridMap({ nodes, edges, onNodeClick, selectedNodeId }: GridMapPr
     edgesSource?.setData(edgesToGeoJSON(nodes, edges));
   }, [nodes, edges, mapLoaded]);
 
+  // Blue highlight on selected node, revert to status color otherwise
+  useEffect(() => {
+    if (!mapLoaded || !mapRef.current) return;
+    const map = mapRef.current;
+    map.setPaintProperty('grid-nodes-layer', 'circle-color', [
+      'case',
+      ['==', ['get', 'id'], selectedNodeId ?? '___none___'],
+      '#3b82f6',
+      ['get', 'color'],
+    ]);
+    map.setPaintProperty('grid-nodes-layer', 'circle-stroke-color', [
+      'case',
+      ['==', ['get', 'id'], selectedNodeId ?? '___none___'],
+      '#93c5fd',
+      '#0f1117',
+    ]);
+    map.setPaintProperty('grid-nodes-layer', 'circle-stroke-width', [
+      'case',
+      ['==', ['get', 'id'], selectedNodeId ?? '___none___'],
+      3,
+      2,
+    ]);
+  }, [selectedNodeId, mapLoaded]);
+
   return (
     <div className="absolute inset-0">
       <div ref={mapContainerRef} className="w-full h-full" />
       {mapInstance && (
-        <D3Overlay
-          map={mapInstance}
-          selectedNodeId={selectedNodeId ?? null}
-          nodes={nodes}
-        />
+        <>
+          <D3Overlay
+            map={mapInstance}
+            selectedNodeId={selectedNodeId ?? null}
+            nodes={nodes}
+            stormActive={stormActive}
+            epicenterId={epicenterId}
+            affectedNodeIds={affectedNodeIds}
+          />
+          <StormCanvas
+            stormActive={stormActive ?? false}
+            width={mapContainerRef.current?.clientWidth ?? window.innerWidth}
+            height={mapContainerRef.current?.clientHeight ?? window.innerHeight}
+          />
+        </>
       )}
       <MapLegend />
     </div>

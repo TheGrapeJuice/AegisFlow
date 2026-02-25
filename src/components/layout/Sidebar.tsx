@@ -16,9 +16,10 @@ const navItems: NavItem[] = [
 
 interface SidebarProps {
   onStormEvent?: () => Promise<void>;
+  stormActive?: boolean;
 }
 
-export function Sidebar({ onStormEvent }: SidebarProps) {
+export function Sidebar({ onStormEvent, stormActive }: SidebarProps) {
   const [loading, setLoading] = useState(false);
   const [lastResult, setLastResult] = useState<'idle' | 'success' | 'error'>('idle');
 
@@ -68,17 +69,17 @@ export function Sidebar({ onStormEvent }: SidebarProps) {
           className={`w-full flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
             ${loading
               ? 'bg-orange-500/20 text-orange-300 cursor-wait'
-              : lastResult === 'success'
-              ? 'bg-green-500/20 text-green-400'
+              : stormActive
+              ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30'
               : lastResult === 'error'
               ? 'bg-red-500/20 text-red-400'
               : 'bg-orange-500/20 text-orange-400 hover:bg-orange-500/30'
             }`}
         >
           {loading
-            ? 'Injecting...'
-            : lastResult === 'success'
-            ? 'Storm Injected'
+            ? (stormActive ? 'Stopping...' : 'Injecting...')
+            : stormActive
+            ? '⚡ Stop Storm'
             : lastResult === 'error'
             ? 'Failed'
             : 'Simulate Storm Event'}

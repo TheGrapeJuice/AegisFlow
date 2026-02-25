@@ -11,12 +11,26 @@ const API_BASE = import.meta.env.VITE_API_BASE ?? 'http://localhost:8000';
 
 export function DashboardLayout() {
   const [selectedNode, setSelectedNode] = useState<GridNode | null>(null);
+  const [stormActive, setStormActive] = useState(false);
+  const [epicenterId, setEpicenterId] = useState<string | null>(null);
+  const [affectedNodeIds, setAffectedNodeIds] = useState<string[]>([]);
   const { nodes: topologyNodes, edges, loading } = useTopology();
   const { nodeMap, connected } = useNodeWebSocket();
 
   const handleStormEvent = async () => {
+    if (stormActive) {
+      // Toggle off — no network call needed
+      setStormActive(false);
+      setEpicenterId(null);
+      setAffectedNodeIds([]);
+      return;
+    }
     const res = await fetch(`${API_BASE}/api/storm`, { method: 'POST' });
     if (!res.ok) throw new Error(`Storm injection failed: ${res.status}`);
+    const data = await res.json() as { injected: boolean; epicenter: string; affected: string[] };
+    setEpicenterId(data.epicenter);
+    setAffectedNodeIds(data.affected);
+    setStormActive(true);
   };
 
   // Merge: use WebSocket state if available, fall back to topology
@@ -54,13 +68,16 @@ export function DashboardLayout() {
     <div className="h-screen flex flex-col bg-grid-bg overflow-hidden">
       <Header connected={connected} />
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar onStormEvent={handleStormEvent} />
+        <Sidebar onStormEvent={handleStormEvent} stormActive={stormActive} />
         <main className="flex-1 relative bg-grid-bg" id="map-canvas">
           <GridMap
             nodes={liveNodes}
             edges={edges}
             onNodeClick={setSelectedNode}
             selectedNodeId={liveSelectedNode?.id ?? null}
+            stormActive={stormActive}
+            epicenterId={epicenterId}
+            affectedNodeIds={affectedNodeIds}
           />
         </main>
         <StatusPanel selectedNode={liveSelectedNode} latestReading={latestReading} />
