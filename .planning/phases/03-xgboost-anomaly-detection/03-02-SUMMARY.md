@@ -70,7 +70,7 @@ Each task was committed atomically:
 
 1. **Task 1: Add _inference_loop to ws.py and start it in main.py lifespan** - `6a5ff0a` (feat)
 
-**Plan metadata:** (docs commit follows)
+**Plan metadata:** `2c9b358` (docs: complete plan)
 
 ## Files Created/Modified
 - `backend/routers/ws.py` - Added _inference_loop() async function between _broadcast_loop and storm endpoint
@@ -95,6 +95,13 @@ None - no external service configuration required.
 - WebSocket /ws/nodes payload now includes anomaly_score and is_anomalous — frontend Plan 03 can read these fields immediately
 - After 5 seconds of server uptime, all 24 nodes will have live XGBoost anomaly scores flowing in WebSocket messages
 - Rolling buffer warm-up (5 readings) still applies — first 5s returns (0.0, False) for all nodes, which is correct default behavior
+
+## Self-Check: PASSED
+
+- FOUND: backend/routers/ws.py
+- FOUND: backend/main.py
+- FOUND: .planning/phases/03-xgboost-anomaly-detection/03-02-SUMMARY.md
+- FOUND: commit 6a5ff0a (feat: wire XGBoost inference loop into FastAPI lifespan)
 
 ---
 *Phase: 03-xgboost-anomaly-detection*
