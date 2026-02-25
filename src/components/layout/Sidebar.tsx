@@ -51,7 +51,7 @@ export function Sidebar({ onStormEvent, stormActive }: SidebarProps) {
           return (
             <button
               key={item.label}
-              style={item.active ? { boxShadow: 'inset 3px 0 10px rgba(59,130,246,0.2)' } : undefined}
+              style={item.active ? { boxShadow: 'inset -3px 0 10px rgba(59,130,246,0.2)' } : undefined}
               className={
                 item.active
                   ? "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium bg-blue-500/10 text-blue-400 border-r-2 border-blue-500 w-full text-left"
