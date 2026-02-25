@@ -108,8 +108,8 @@ export function StatusPanel({ selectedNode, latestReading, events, anomalyAlerts
                     }}
                   />
                 </div>
-                <span className="text-grid-text font-mono text-xs w-16 text-right flex-shrink-0">
-                  {selectedNode.voltage} kV
+                <span className="text-grid-text font-mono text-xs w-20 text-right flex-shrink-0">
+                  {selectedNode.voltage.toFixed(1)} kV
                 </span>
               </div>
 
