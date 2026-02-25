@@ -3,19 +3,39 @@ import { NodeCharts } from '../sidebar/NodeCharts';
 import { useNodeHistory } from '../../hooks/useNodeHistory';
 import type { NodeReading } from '../../hooks/useNodeHistory';
 
+const ACCENT: Record<string, string> = {
+  green:  'border-l-4 border-green-500',
+  yellow: 'border-l-4 border-yellow-500',
+  red:    'border-l-4 border-red-500',
+  blue:   'border-l-4 border-blue-500',
+};
+
 interface StatCardProps {
   label: string;
   value: string;
   subtext: string;
   valueColor?: string;
+  accentColor?: 'green' | 'yellow' | 'red' | 'blue';
+  progressValue?: number;
+  pulse?: boolean;
 }
 
-function StatCard({ label, value, subtext, valueColor = 'text-grid-text' }: StatCardProps) {
+function StatCard({ label, value, subtext, valueColor = 'text-grid-text', accentColor, progressValue, pulse }: StatCardProps) {
   return (
-    <div className="bg-grid-bg rounded-lg p-3 border border-grid-border">
+    <div className={`rounded-lg p-3 border border-grid-border bg-grid-bg/80 backdrop-blur-sm ${accentColor ? ACCENT[accentColor] : ''} ${pulse ? 'animate-pulse' : ''}`}>
       <p className="text-xs text-grid-muted uppercase tracking-wide mb-1">{label}</p>
       <p className={`text-2xl font-bold ${valueColor}`}>{value}</p>
       <p className="text-xs text-grid-muted mt-1">{subtext}</p>
+      {progressValue !== undefined && (
+        <div className="mt-2 h-1 bg-grid-border rounded-full overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all duration-500 ${
+              progressValue >= 90 ? 'bg-red-500' : progressValue >= 75 ? 'bg-yellow-500' : 'bg-green-500'
+            }`}
+            style={{ width: `${progressValue}%` }}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -32,30 +52,37 @@ interface StatusPanelProps {
 
 export function StatusPanel({ selectedNode, latestReading }: StatusPanelProps) {
   return (
-    <aside className="w-72 bg-grid-surface border-l border-grid-border flex flex-col p-3 gap-3 flex-shrink-0 overflow-y-auto">
+    <aside
+      className="w-72 bg-grid-surface border-l border-grid-border flex flex-col p-3 gap-3 flex-shrink-0 overflow-y-auto"
+      style={{ boxShadow: '-4px 0 24px rgba(59,130,246,0.07)' }}
+    >
       <StatCard
         label="Active Nodes"
         value="24"
         subtext="Total nodes online"
-        valueColor="text-grid-text"
+        accentColor="green"
       />
       <StatCard
         label="Anomalies"
         value="0"
         subtext="Last 5 minutes"
         valueColor="text-node-normal"
+        accentColor="green"
       />
       <StatCard
         label="Grid Load"
         value="87%"
         subtext="System capacity"
         valueColor="text-node-warning"
+        accentColor="yellow"
+        progressValue={87}
       />
       <StatCard
         label="FL Round"
         value="--"
         subtext="Training inactive"
         valueColor="text-grid-muted"
+        accentColor="blue"
       />
 
       {/* Node detail section */}
