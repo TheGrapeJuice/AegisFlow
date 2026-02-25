@@ -176,21 +176,16 @@ export function GridMap({ nodes, edges, onNodeClick, selectedNodeId, stormActive
     edgesSource?.setData(edgesToGeoJSON(nodes, edges));
   }, [nodes, edges, mapLoaded]);
 
-  // Blue highlight on selected node, revert to status color otherwise
+  // Enlarge selected node radius, keep status color
   useEffect(() => {
     if (!mapLoaded || !mapRef.current) return;
     const map = mapRef.current;
-    map.setPaintProperty('grid-nodes-layer', 'circle-color', [
+    const baseRadius: maplibregl.ExpressionSpecification = ['match', ['get', 'type'], 'generator', 10, 'substation', 8, 6];
+    map.setPaintProperty('grid-nodes-layer', 'circle-radius', [
       'case',
       ['==', ['get', 'id'], selectedNodeId ?? '___none___'],
-      '#3b82f6',
-      ['get', 'color'],
-    ]);
-    map.setPaintProperty('grid-nodes-layer', 'circle-stroke-color', [
-      'case',
-      ['==', ['get', 'id'], selectedNodeId ?? '___none___'],
-      '#93c5fd',
-      '#0f1117',
+      ['+', baseRadius, 6],
+      baseRadius,
     ]);
     map.setPaintProperty('grid-nodes-layer', 'circle-stroke-width', [
       'case',
@@ -198,6 +193,9 @@ export function GridMap({ nodes, edges, onNodeClick, selectedNodeId, stormActive
       3,
       2,
     ]);
+    // Always use status color (no blue override)
+    map.setPaintProperty('grid-nodes-layer', 'circle-color', ['get', 'color']);
+    map.setPaintProperty('grid-nodes-layer', 'circle-stroke-color', '#0f1117');
   }, [selectedNodeId, mapLoaded]);
 
   return (
