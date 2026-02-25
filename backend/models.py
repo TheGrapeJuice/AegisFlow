@@ -15,6 +15,8 @@ class NodeState(BaseModel):
     voltage: float
     frequency: float
     load: float
+    anomaly_score: float = 0.0
+    is_anomalous: bool = False
 
 
 class TopologyResponse(BaseModel):
