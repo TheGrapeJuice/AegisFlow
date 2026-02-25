@@ -23,7 +23,7 @@ function NodeChartsWrapper({ selectedNodeId, latestReading }: { selectedNodeId: 
 export function StatusPanel({ selectedNode, latestReading, events, anomalyAlerts = [], onDismissAlert, onDismissAll }: StatusPanelProps) {
   return (
     <aside
-      className="w-72 bg-grid-surface border-l border-grid-border flex flex-col p-3 gap-3 flex-shrink-0 overflow-y-auto"
+      className="w-72 bg-grid-surface border-l border-grid-border flex flex-col p-3 gap-2 flex-shrink-0 overflow-y-auto"
       style={{ boxShadow: '-4px 0 24px rgba(59,130,246,0.07)' }}
     >
       {/* Anomaly alerts — only shown when alerts exist */}
@@ -36,8 +36,8 @@ export function StatusPanel({ selectedNode, latestReading, events, anomalyAlerts
       )}
 
       {/* Event feed */}
-      <div className="border-t border-grid-border pt-3 first:border-t-0 first:pt-0">
-        <p className="text-xs font-semibold text-grid-text uppercase tracking-wide mb-2">
+      <div className="border-t border-grid-border pt-2 first:border-t-0 first:pt-0">
+        <p className="text-xs font-semibold text-grid-text uppercase tracking-wide mb-1.5">
           Event Log
         </p>
         {events && events.length > 0 ? (
@@ -69,8 +69,8 @@ export function StatusPanel({ selectedNode, latestReading, events, anomalyAlerts
       </div>
 
       {/* Node detail section */}
-      <div className="border-t border-grid-border pt-3">
-        <p className="text-xs font-semibold text-grid-text uppercase tracking-wide mb-2">
+      <div className="border-t border-grid-border pt-2">
+        <p className="text-xs font-semibold text-grid-text uppercase tracking-wide mb-1.5">
           Node Detail
         </p>
         {selectedNode ? (
@@ -156,7 +156,7 @@ export function StatusPanel({ selectedNode, latestReading, events, anomalyAlerts
                 </span>
               </div>
             </div>
-            <div className="mt-2 border-t border-grid-border pt-2">
+            <div className="mt-1 border-t border-grid-border pt-2">
               <p className="text-xs text-grid-muted uppercase tracking-wide mb-1">Live Charts</p>
               <NodeChartsWrapper selectedNodeId={selectedNode.id} latestReading={latestReading} />
             </div>

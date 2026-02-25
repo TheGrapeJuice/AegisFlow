@@ -96,7 +96,7 @@ export function NodeCharts({ readings, loading }: NodeChartsProps) {
     return <div className="text-xs text-grid-muted italic">Loading history...</div>;
   }
   return (
-    <div className="flex flex-col gap-3 mt-2">
+    <div className="flex flex-col gap-2 mt-1">
       <Sparkline data={readings} field="voltage" color="#60a5fa" label="Voltage" unit="kV" />
       <Sparkline data={readings} field="frequency" color="#34d399" label="Frequency" unit="Hz" />
     </div>

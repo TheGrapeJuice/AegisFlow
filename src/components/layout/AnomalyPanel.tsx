@@ -32,7 +32,7 @@ export function AnomalyPanel({ alerts, onDismiss, onDismissAll }: AnomalyPanelPr
       </div>
 
       {/* Alert rows */}
-      <div className="flex flex-col divide-y divide-grid-border max-h-40 overflow-y-auto">
+      <div className="flex flex-col divide-y divide-grid-border max-h-64 overflow-y-auto">
         {alerts.map(alert => (
           <div key={alert.nodeId} className="flex items-center gap-2 px-3 py-2">
             <div className="flex flex-col flex-1 min-w-0">
