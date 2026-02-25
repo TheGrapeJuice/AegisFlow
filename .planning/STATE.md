@@ -10,13 +10,13 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 ## Current Position
 
 **Phase:** 3 of 7 (XGBoost Anomaly Detection)
-**Current Plan:** 2
+**Current Plan:** 3
 **Total Plans in Phase:** 4
 **Status:** Ready to execute
 **Last Activity:** 2026-02-25
 Last activity: 2026-02-25 — Completed 03-01 (XGBoost ML backend: train.py, inference.py, model.json, NodeState extension)
 
-**Progress:** [█████████░] 86%
+**Progress:** [█████████░] 93%
 
 ## Performance Metrics
 
@@ -44,6 +44,7 @@ Last activity: 2026-02-25 — Completed 03-01 (XGBoost ML backend: train.py, inf
 | Phase 02-backend-and-data-pipeline P05 | 1min | 2 tasks | 4 files |
 | Phase 03-xgboost-anomaly-detection PP01 | 7min | 2 tasks | 6 files |
 | Phase 03-xgboost-anomaly-detection P02 | 2min | 1 tasks | 2 files |
+| Phase 03-xgboost-anomaly-detection P03 | 2min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -88,6 +89,8 @@ Recent decisions affecting current work:
 - [Phase 03-xgboost-anomaly-detection]: Deferred import of predict_anomalies inside _inference_loop body eliminates circular import risk at module load time
 - [Phase 03-xgboost-anomaly-detection]: Two asyncio background tasks from one lifespan: _broadcast_loop at 1s and _inference_loop at 5s run concurrently without blocking each other
 - [Phase 03-xgboost-anomaly-detection]: Exception guard in _inference_loop catch-all: never crash the inference loop, print and continue — broadcast loop unaffected by inference failures
+- [Phase 03-03]: AnomalyPanel placed as fixed overlay sibling inside flex container — does not affect flex layout
+- [Phase 03-03]: dismissedNodeIds Set cleared on storm reset to enable re-alert after second storm
 
 ### Pending Todos
 
@@ -103,6 +106,6 @@ None.
 
 ## Session Continuity
 
-**Last session:** 2026-02-25T18:57:56.131Z
-**Stopped At:** Completed 03-02-PLAN.md (inference loop wiring)
+**Last session:** 2026-02-25T18:58:57.110Z
+**Stopped At:** Completed 03-03-PLAN.md (Anomaly alert UI)
 **Resume File:** None
