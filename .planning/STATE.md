@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-23)
 
 **Core value:** A live, visually compelling dashboard that makes AI-powered grid intelligence feel real — the kind of demo that gets paused during an interview so the interviewer can ask how it works.
-**Current focus:** Phase 1 — Frontend Shell
+**Current focus:** Phase 3 — XGBoost Anomaly Detection
 
 ## Current Position
 
-**Phase:** 1 of 7 (Frontend Shell)
-**Current Plan:** 4
-**Total Plans in Phase:** 4
-**Status:** Phase complete — ready for verification
-**Last Activity:** 2026-02-24
-Last activity: 2026-02-24 — Completed Plan 04 (Phase 1 visual verification — all 5 criteria approved)
+**Phase:** 3 of 7 (XGBoost Anomaly Detection)
+**Current Plan:** 0 (not yet planned)
+**Total Plans in Phase:** TBD
+**Status:** Ready for Phase 3 planning
+**Last Activity:** 2026-02-25
+Last activity: 2026-02-25 — Completed Phase 2 (all 5 criteria approved by human reviewer)
 
 **Progress:** [█████████░] 90%
 
@@ -77,6 +77,9 @@ Recent decisions affecting current work:
 - [Phase 02-backend-and-data-pipeline]: GridMap live setData useEffect complete from Plan 03 — no GridMap changes needed in Plan 04
 - [Phase 02-backend-and-data-pipeline]: NodeChartsWrapper inner component in StatusPanel — React hooks rules require hook calls at component top level; inner component pattern avoids conditional hook calls
 - [Phase 02-backend-and-data-pipeline]: latestReading derived via useMemo from liveSelectedNode in DashboardLayout — keeps useNodeHistory hook pure (no direct WebSocket access) while enabling real-time chart extension
+- [Phase 02-backend-and-data-pipeline]: Phase 2 approved on first submission — all 5 success criteria confirmed without requiring any fixes
+- [Phase 02-ui-refresh]: accent borders use border-l-{color}-500 (directional) not border-{color}-500 — prevents color bleeding to all 4 sides
+- [Phase 02-ui-refresh]: hour12: false required in toLocaleTimeString for guaranteed 24-hour format on US-locale machines
 
 ### Pending Todos
 
@@ -92,6 +95,6 @@ None.
 
 ## Session Continuity
 
-**Last session:** 2026-02-24T22:15:35.918Z
-**Stopped At:** Completed 02-05-PLAN.md — useNodeHistory hook and NodeCharts D3 sparklines
-**Resume File:** None
+**Last session:** 2026-02-25T06:16:35.684Z
+**Stopped At:** Phase 3 context gathered
+**Resume File:** .planning/phases/03-xgboost-anomaly-detection/03-CONTEXT.md
