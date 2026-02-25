@@ -166,8 +166,8 @@ export function StatusPanel({ selectedNode, latestReading }: StatusPanelProps) {
                   />
                 </div>
                 <span className={`font-mono text-xs w-8 text-right flex-shrink-0 ${
-                  selectedNode.load > 90 ? 'text-red-400' :
-                  selectedNode.load > 75 ? 'text-yellow-400' : 'text-green-400'
+                  selectedNode.load >= 90 ? 'text-red-400' :
+                  selectedNode.load >= 75 ? 'text-yellow-400' : 'text-green-400'
                 }`}>
                   {selectedNode.load}%
                 </span>
