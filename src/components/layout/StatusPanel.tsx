@@ -207,7 +207,7 @@ export function StatusPanel({ selectedNode, latestReading, events }: StatusPanel
                   {event.from} → {event.to}
                 </span>
                 <span className="text-grid-muted font-mono text-[10px] flex-shrink-0">
-                  {event.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                  {event.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
                 </span>
               </div>
             ))}
