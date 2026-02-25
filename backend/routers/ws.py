@@ -41,6 +41,22 @@ async def _broadcast_loop():
         await asyncio.sleep(1)
 
 
+async def _inference_loop():
+    """Run XGBoost inference every 5 seconds, updating NODE_STATES anomaly fields in-place."""
+    from backend.ml.inference import predict_anomalies
+    while True:
+        await asyncio.sleep(5)
+        try:
+            results = predict_anomalies(NODE_STATES)
+            for node_id, (score, flag) in results.items():
+                if node_id in NODE_STATES:
+                    NODE_STATES[node_id].anomaly_score = score
+                    NODE_STATES[node_id].is_anomalous = flag
+        except Exception as e:
+            # Never crash the loop — log and continue
+            print(f"[inference] error: {e}")
+
+
 @router.post("/api/storm")
 async def inject_storm():
     """
