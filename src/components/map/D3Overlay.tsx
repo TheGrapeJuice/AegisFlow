@@ -43,10 +43,9 @@ export function D3Overlay({ map, selectedNodeId, nodes, stormActive, epicenterId
     const m = map;
     const svg = d3.select(svgRef.current);
 
-    // Ensure layer order: glow → labels → selection → storm
+    // Ensure layer order: glow → labels → storm
     if (svg.select('g.glow-layer').empty()) svg.append('g').attr('class', 'glow-layer');
     if (svg.select('g.label-layer').empty()) svg.append('g').attr('class', 'label-layer');
-    if (svg.select('g.selection-layer').empty()) svg.append('g').attr('class', 'selection-layer');
     if (svg.select('g.storm-layer').empty()) svg.append('g').attr('class', 'storm-layer');
 
     const glowLayer = svg.select<SVGGElement>('g.glow-layer');
