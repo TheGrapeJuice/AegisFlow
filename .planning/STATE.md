@@ -10,13 +10,13 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 ## Current Position
 
 **Phase:** 3 of 7 (XGBoost Anomaly Detection)
-**Current Plan:** 1 (completed)
+**Current Plan:** 2
 **Total Plans in Phase:** 4
-**Status:** In Progress — Phase 3 Plan 1 of 4 complete
+**Status:** Ready to execute
 **Last Activity:** 2026-02-25
 Last activity: 2026-02-25 — Completed 03-01 (XGBoost ML backend: train.py, inference.py, model.json, NodeState extension)
 
-**Progress:** [████████░░] 79%
+**Progress:** [█████████░] 86%
 
 ## Performance Metrics
 
@@ -43,6 +43,7 @@ Last activity: 2026-02-25 — Completed 03-01 (XGBoost ML backend: train.py, inf
 | Phase 02-backend-and-data-pipeline P04 | 1min | 2 tasks | 2 files |
 | Phase 02-backend-and-data-pipeline P05 | 1min | 2 tasks | 4 files |
 | Phase 03-xgboost-anomaly-detection PP01 | 7min | 2 tasks | 6 files |
+| Phase 03-xgboost-anomaly-detection P02 | 2min | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -84,6 +85,9 @@ Recent decisions affecting current work:
 - [Phase 03-01]: xgb.Booster for model loading instead of XGBClassifier — avoids sklearn 1.6.1 tag API incompatibility with XGBoost 2.1.3
 - [Phase 03-01]: ML model artifact (model.json) committed to repo — eliminates runtime training step, instant cold start for inference
 - [Phase 03-01]: 9-feature schema with rolling stats over window=5 — captures both instantaneous readings and trend context for anomaly detection
+- [Phase 03-xgboost-anomaly-detection]: Deferred import of predict_anomalies inside _inference_loop body eliminates circular import risk at module load time
+- [Phase 03-xgboost-anomaly-detection]: Two asyncio background tasks from one lifespan: _broadcast_loop at 1s and _inference_loop at 5s run concurrently without blocking each other
+- [Phase 03-xgboost-anomaly-detection]: Exception guard in _inference_loop catch-all: never crash the inference loop, print and continue — broadcast loop unaffected by inference failures
 
 ### Pending Todos
 
@@ -99,6 +103,6 @@ None.
 
 ## Session Continuity
 
-**Last session:** 2026-02-25T18:53:57.303Z
-**Stopped At:** Completed 03-01-PLAN.md (XGBoost ML backend)
+**Last session:** 2026-02-25T18:57:56.131Z
+**Stopped At:** Completed 03-02-PLAN.md (inference loop wiring)
 **Resume File:** None
