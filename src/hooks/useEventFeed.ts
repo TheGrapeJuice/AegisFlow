@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import type { GridNode } from '../types/grid';
+import type { GridNode, NodeStatus } from '../types/grid';
 
 export interface EventEntry {
   id: string;
   nodeId: string;
   nodeName: string;
-  from: string;
-  to: string;
+  from: NodeStatus;
+  to: NodeStatus;
   timestamp: Date;
 }
 
 export function useEventFeed(nodes: GridNode[]): EventEntry[] {
-  const prevStatusRef = useRef<Map<string, string>>(new Map());
+  const prevStatusRef = useRef<Map<string, NodeStatus>>(new Map());
   const [events, setEvents] = useState<EventEntry[]>([]);
 
   useEffect(() => {
