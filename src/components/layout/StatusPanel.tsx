@@ -95,30 +95,82 @@ export function StatusPanel({ selectedNode, latestReading }: StatusPanelProps) {
             <div className="flex items-center justify-between">
               <span className="text-xs text-grid-muted uppercase tracking-wider">Node</span>
               <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                selectedNode.status === 'normal' ? 'bg-green-500/20 text-green-400' :
-                selectedNode.status === 'warning' ? 'bg-yellow-500/20 text-yellow-400' :
-                'bg-red-500/20 text-red-400'
+                selectedNode.status === 'normal'
+                  ? 'bg-green-500/20 text-green-400'
+                  : selectedNode.status === 'warning'
+                  ? 'bg-yellow-500/20 text-yellow-400 ring-1 ring-yellow-400/50 animate-pulse'
+                  : 'bg-red-500/20 text-red-400 ring-1 ring-red-400/50 animate-pulse'
               }`}>
                 {selectedNode.status.toUpperCase()}
               </span>
             </div>
             <p className="text-sm font-semibold text-grid-text">{selectedNode.name}</p>
             <p className="text-xs text-grid-muted capitalize">{selectedNode.type}</p>
-            <div className="mt-2 flex flex-col gap-1.5 border-t border-grid-border pt-2">
-              <div className="flex justify-between text-xs">
-                <span className="text-grid-muted">Voltage</span>
-                <span className="text-grid-text font-mono">{selectedNode.voltage} kV</span>
+            <div className="mt-2 flex flex-col gap-2 border-t border-grid-border pt-2">
+              {/* Voltage deviation bar — nominal 120kV, ±20kV range */}
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-grid-muted w-16 flex-shrink-0">Voltage</span>
+                <div className="flex-1 h-1 bg-grid-border rounded-full overflow-hidden relative">
+                  <div className="absolute left-1/2 top-0 bottom-0 w-px bg-grid-muted/40" />
+                  <div
+                    className={`absolute top-0 bottom-0 rounded-full ${
+                      Math.abs(selectedNode.voltage - 120) > 12 ? 'bg-red-500' :
+                      Math.abs(selectedNode.voltage - 120) > 6  ? 'bg-yellow-500' : 'bg-blue-400'
+                    }`}
+                    style={{
+                      left: selectedNode.voltage < 120
+                        ? `${Math.max(0, 50 - ((120 - selectedNode.voltage) / 20) * 50)}%`
+                        : '50%',
+                      width: `${Math.min(50, (Math.abs(selectedNode.voltage - 120) / 20) * 50)}%`,
+                    }}
+                  />
+                </div>
+                <span className="text-grid-text font-mono text-xs w-16 text-right flex-shrink-0">
+                  {selectedNode.voltage} kV
+                </span>
               </div>
-              <div className="flex justify-between text-xs">
-                <span className="text-grid-muted">Frequency</span>
-                <span className="text-grid-text font-mono">{selectedNode.frequency.toFixed(2)} Hz</span>
+
+              {/* Frequency deviation bar — nominal 60Hz, ±1Hz range */}
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-grid-muted w-16 flex-shrink-0">Frequency</span>
+                <div className="flex-1 h-1 bg-grid-border rounded-full overflow-hidden relative">
+                  <div className="absolute left-1/2 top-0 bottom-0 w-px bg-grid-muted/40" />
+                  <div
+                    className={`absolute top-0 bottom-0 rounded-full ${
+                      Math.abs(selectedNode.frequency - 60) > 0.5  ? 'bg-red-500' :
+                      Math.abs(selectedNode.frequency - 60) > 0.25 ? 'bg-yellow-500' : 'bg-green-400'
+                    }`}
+                    style={{
+                      left: selectedNode.frequency < 60
+                        ? `${Math.max(0, 50 - ((60 - selectedNode.frequency) / 1) * 50)}%`
+                        : '50%',
+                      width: `${Math.min(50, (Math.abs(selectedNode.frequency - 60) / 1) * 50)}%`,
+                    }}
+                  />
+                </div>
+                <span className="text-grid-text font-mono text-xs w-20 text-right flex-shrink-0">
+                  {selectedNode.frequency.toFixed(2)} Hz
+                </span>
               </div>
-              <div className="flex justify-between text-xs">
-                <span className="text-grid-muted">Load</span>
-                <span className={`font-mono text-xs ${
+
+              {/* Load progress bar */}
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-grid-muted w-16 flex-shrink-0">Load</span>
+                <div className="flex-1 h-1.5 bg-grid-border rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      selectedNode.load >= 90 ? 'bg-red-500' :
+                      selectedNode.load >= 75 ? 'bg-yellow-500' : 'bg-green-500'
+                    }`}
+                    style={{ width: `${selectedNode.load}%` }}
+                  />
+                </div>
+                <span className={`font-mono text-xs w-8 text-right flex-shrink-0 ${
                   selectedNode.load > 90 ? 'text-red-400' :
                   selectedNode.load > 75 ? 'text-yellow-400' : 'text-green-400'
-                }`}>{selectedNode.load}%</span>
+                }`}>
+                  {selectedNode.load}%
+                </span>
               </div>
             </div>
             <div className="mt-2 border-t border-grid-border pt-2">
