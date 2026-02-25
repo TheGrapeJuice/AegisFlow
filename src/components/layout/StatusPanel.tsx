@@ -2,6 +2,7 @@ import type { GridNode } from '../../types/grid';
 import { NodeCharts } from '../sidebar/NodeCharts';
 import { useNodeHistory } from '../../hooks/useNodeHistory';
 import type { NodeReading } from '../../hooks/useNodeHistory';
+import type { EventEntry } from '../../hooks/useEventFeed';
 
 const ACCENT: Record<string, string> = {
   green:  'border-l-4 border-l-green-500',
@@ -48,9 +49,10 @@ function NodeChartsWrapper({ selectedNodeId, latestReading }: { selectedNodeId: 
 interface StatusPanelProps {
   selectedNode?: GridNode | null;
   latestReading?: NodeReading | null;
+  events?: EventEntry[];
 }
 
-export function StatusPanel({ selectedNode, latestReading }: StatusPanelProps) {
+export function StatusPanel({ selectedNode, latestReading, events }: StatusPanelProps) {
   return (
     <aside
       className="w-72 bg-grid-surface border-l border-grid-border flex flex-col p-3 gap-3 flex-shrink-0 overflow-y-auto"
@@ -180,6 +182,38 @@ export function StatusPanel({ selectedNode, latestReading }: StatusPanelProps) {
           </div>
         ) : (
           <p className="text-xs text-grid-muted italic">Click a node to inspect</p>
+        )}
+      </div>
+      {/* Event feed */}
+      <div className="border-t border-grid-border pt-3">
+        <p className="text-xs font-semibold text-grid-text uppercase tracking-wide mb-2">
+          Event Log
+        </p>
+        {events && events.length > 0 ? (
+          <div className="flex flex-col gap-1.5 max-h-36 overflow-y-auto">
+            {events.map((event, i) => (
+              <div
+                key={event.id}
+                className="flex items-center justify-between text-xs gap-1"
+                style={{ opacity: Math.max(0.3, 1 - i * 0.08) }}
+              >
+                <span className="text-grid-muted truncate w-14 flex-shrink-0">
+                  {event.nodeName.split(' ').slice(0, 2).join(' ')}
+                </span>
+                <span className={`flex-shrink-0 ${
+                  event.to === 'critical' ? 'text-red-400' :
+                  event.to === 'warning'  ? 'text-yellow-400' : 'text-green-400'
+                }`}>
+                  {event.from} → {event.to}
+                </span>
+                <span className="text-grid-muted font-mono text-[10px] flex-shrink-0">
+                  {event.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs text-grid-muted italic">No state changes yet</p>
         )}
       </div>
     </aside>

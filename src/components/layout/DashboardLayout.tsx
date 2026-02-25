@@ -5,6 +5,7 @@ import { StatusPanel } from './StatusPanel';
 import { GridMap } from '../map/GridMap';
 import { useTopology } from '../../hooks/useTopology';
 import { useNodeWebSocket } from '../../hooks/useNodeWebSocket';
+import { useEventFeed } from '../../hooks/useEventFeed';
 import type { GridNode } from '../../types/grid';
 
 const API_BASE = import.meta.env.VITE_API_BASE ?? 'http://localhost:8000';
@@ -56,6 +57,8 @@ export function DashboardLayout() {
     };
   }, [liveSelectedNode]);
 
+  const events = useEventFeed(liveNodes);
+
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-grid-bg">
@@ -80,7 +83,7 @@ export function DashboardLayout() {
             affectedNodeIds={affectedNodeIds}
           />
         </main>
-        <StatusPanel selectedNode={liveSelectedNode} latestReading={latestReading} />
+        <StatusPanel selectedNode={liveSelectedNode} latestReading={latestReading} events={events} />
       </div>
     </div>
   );
