@@ -3,7 +3,6 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { StatusPanel } from './StatusPanel';
 import { GridMap } from '../map/GridMap';
-import { AnomalyPanel } from './AnomalyPanel';
 import type { AnomalyAlert } from './AnomalyPanel';
 import { useTopology } from '../../hooks/useTopology';
 import { useNodeWebSocket } from '../../hooks/useNodeWebSocket';
@@ -18,7 +17,6 @@ export function DashboardLayout() {
   const [epicenterId, setEpicenterId] = useState<string | null>(null);
   const [affectedNodeIds, setAffectedNodeIds] = useState<string[]>([]);
   const [anomalyAlerts, setAnomalyAlerts] = useState<AnomalyAlert[]>([]);
-  const [anomalyPanelVisible, setAnomalyPanelVisible] = useState(false);
   const [dismissedNodeIds, setDismissedNodeIds] = useState<Set<string>>(new Set());
   const { nodes: topologyNodes, edges, loading } = useTopology();
   const { nodeMap, connected } = useNodeWebSocket();
@@ -94,8 +92,6 @@ export function DashboardLayout() {
       return next;
     });
 
-    // Auto-open panel on first anomaly
-    setAnomalyPanelVisible(true);
   }, [liveNodes, dismissedNodeIds]);
 
   const handleDismissAlert = (nodeId: string) => {
@@ -135,14 +131,8 @@ export function DashboardLayout() {
             affectedNodeIds={affectedNodeIds}
           />
         </main>
-        <StatusPanel selectedNode={liveSelectedNode} latestReading={latestReading} events={events} />
+        <StatusPanel selectedNode={liveSelectedNode} latestReading={latestReading} events={events} anomalyAlerts={anomalyAlerts} onDismissAlert={handleDismissAlert} onDismissAll={handleDismissAll} />
       </div>
-      <AnomalyPanel
-        alerts={anomalyAlerts}
-        onDismiss={handleDismissAlert}
-        onDismissAll={handleDismissAll}
-        visible={anomalyPanelVisible}
-      />
     </div>
   );
 }
