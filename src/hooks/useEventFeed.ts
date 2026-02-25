@@ -15,8 +15,6 @@ export function useEventFeed(nodes: GridNode[]): EventEntry[] {
   const [events, setEvents] = useState<EventEntry[]>([]);
 
   useEffect(() => {
-    if (nodes.length === 0) return;
-
     const newEvents: EventEntry[] = [];
     const prevStatus = prevStatusRef.current;
 
