@@ -1,18 +1,40 @@
 import { useState } from 'react';
-import { Map, Activity, Cpu, BarChart2 } from "lucide-react";
 
-interface NavItem {
-  icon: React.ComponentType<{ className?: string }>;
+const ACCENT: Record<string, string> = {
+  green:  'border-l-4 border-l-green-500',
+  yellow: 'border-l-4 border-l-yellow-500',
+  red:    'border-l-4 border-l-red-500',
+  blue:   'border-l-4 border-l-blue-500',
+};
+
+interface StatCardProps {
   label: string;
-  active?: boolean;
+  value: string;
+  subtext: string;
+  valueColor?: string;
+  accentColor?: 'green' | 'yellow' | 'red' | 'blue';
+  progressValue?: number;
 }
 
-const navItems: NavItem[] = [
-  { icon: Map, label: "Grid Map", active: true },
-  { icon: Activity, label: "Anomalies" },
-  { icon: Cpu, label: "ML Status" },
-  { icon: BarChart2, label: "Analytics" },
-];
+function StatCard({ label, value, subtext, valueColor = 'text-grid-text', accentColor, progressValue }: StatCardProps) {
+  return (
+    <div className={`rounded-lg p-3 border border-grid-border bg-grid-bg/80 backdrop-blur-sm ${accentColor ? ACCENT[accentColor] : ''}`}>
+      <p className="text-xs text-grid-muted uppercase tracking-wide mb-1">{label}</p>
+      <p className={`text-2xl font-bold ${valueColor}`}>{value}</p>
+      <p className="text-xs text-grid-muted mt-1">{subtext}</p>
+      {progressValue !== undefined && (
+        <div className="mt-2 h-1 bg-grid-border rounded-full overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all duration-500 ${
+              progressValue >= 90 ? 'bg-red-500' : progressValue >= 75 ? 'bg-yellow-500' : 'bg-green-500'
+            }`}
+            style={{ width: `${progressValue}%` }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface SidebarProps {
   onStormEvent?: () => Promise<void>;
@@ -44,26 +66,37 @@ export function Sidebar({ onStormEvent, stormActive }: SidebarProps) {
       className="w-56 border-r border-grid-border flex flex-col flex-shrink-0"
       style={{ background: 'linear-gradient(to bottom, #1a2130, #161b27)' }}
     >
-      {/* Nav items */}
-      <nav className="flex flex-col gap-1 p-2 flex-1">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.label}
-              style={item.active ? { boxShadow: 'inset -3px 0 10px rgba(59,130,246,0.2)' } : undefined}
-              className={
-                item.active
-                  ? "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium bg-blue-500/10 text-blue-400 border-r-2 border-blue-500 w-full text-left"
-                  : "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-grid-muted hover:text-grid-text hover:bg-white/5 w-full text-left transition-colors"
-              }
-            >
-              <Icon className="w-4 h-4 flex-shrink-0" />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-      </nav>
+      {/* Stat cards */}
+      <div className="flex flex-col gap-2 p-2 flex-1">
+        <StatCard
+          label="Active Nodes"
+          value="24"
+          subtext="Total nodes online"
+          accentColor="green"
+        />
+        <StatCard
+          label="Anomalies"
+          value="0"
+          subtext="Last 5 minutes"
+          valueColor="text-node-normal"
+          accentColor="green"
+        />
+        <StatCard
+          label="Grid Load"
+          value="87%"
+          subtext="System capacity"
+          valueColor="text-node-warning"
+          accentColor="yellow"
+          progressValue={87}
+        />
+        <StatCard
+          label="FL Round"
+          value="--"
+          subtext="Training inactive"
+          valueColor="text-grid-muted"
+          accentColor="blue"
+        />
+      </div>
 
       {/* Storm Event button */}
       <div className="p-3 border-t border-grid-border">
