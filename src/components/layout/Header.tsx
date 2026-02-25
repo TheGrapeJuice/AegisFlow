@@ -7,6 +7,8 @@ interface HeaderProps {
   nodes?: GridNode[];
 }
 
+const tabs = ['Grid Map', 'Anomalies', 'ML Status', 'Analytics'];
+
 export function Header({ connected = true, nodes = [] }: HeaderProps) {
   const [time, setTime] = useState(new Date().toLocaleTimeString());
 
@@ -30,7 +32,7 @@ export function Header({ connected = true, nodes = [] }: HeaderProps) {
       />
 
       {/* Logo */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-shrink-0">
         <Zap className="w-5 h-5 text-blue-400" />
         <span
           className="text-white font-bold text-lg tracking-tight"
@@ -42,15 +44,31 @@ export function Header({ connected = true, nodes = [] }: HeaderProps) {
 
       {/* Live node summary chips */}
       {nodes.length > 0 && (
-        <div className="ml-8 flex items-center gap-4 text-xs font-mono">
+        <div className="ml-8 flex items-center gap-4 text-xs font-mono flex-shrink-0">
           <span className="text-node-normal">● {normalCount} Normal</span>
           {warningCount > 0 && <span className="text-node-warning">● {warningCount} Warning</span>}
           {criticalCount > 0 && <span className="text-node-critical animate-pulse">● {criticalCount} Critical</span>}
         </div>
       )}
 
+      {/* Tab navigation */}
+      <nav className="mx-auto flex items-center gap-1">
+        {tabs.map((tab, i) => (
+          <button
+            key={tab}
+            className={`px-3 h-12 text-xs font-medium transition-colors border-b-2 ${
+              i === 0
+                ? 'text-blue-400 border-blue-400'
+                : 'text-grid-muted border-transparent hover:text-grid-text'
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </nav>
+
       {/* Right: connection status + clock */}
-      <div className="ml-auto flex items-center gap-4">
+      <div className="flex-shrink-0 flex items-center gap-4">
         {connected ? (
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-node-normal animate-pulse" />
