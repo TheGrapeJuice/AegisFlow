@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Frontend Shell** - Dark-themed dashboard with MapLibre map and D3 overlay, no backend required (completed 2026-02-24)
 - [x] **Phase 2: Backend & Data Pipeline** - FastAPI + InfluxDB + WebSocket delivering live synthetic sensor data to the frontend (completed 2026-02-25)
-- [ ] **Phase 3: XGBoost Anomaly Detection** - ML pipeline end-to-end: InfluxDB → XGBoost inference → anomaly alerts in the UI
+- [x] **Phase 3: XGBoost Anomaly Detection** - ML pipeline end-to-end: InfluxDB → XGBoost inference → anomaly alerts in the UI (completed 2026-02-25)
 - [ ] **Phase 4: GNN Cascade Failure Prediction** - GNN cascade chain visualization, rerouting overlay, and confidence scores
 - [ ] **Phase 5: Federated Learning Simulation** - Flower FL simulation with 3 partitioned clients and live training progress panel
 - [ ] **Phase 6: Deployment** - Frontend on Vercel, backend on Railway, cold-start mitigation active
@@ -127,7 +127,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Frontend Shell | 4/4 | Complete   | 2026-02-24 |
 | 2. Backend & Data Pipeline | 6/6 | Complete   | 2026-02-25 |
-| 3. XGBoost Anomaly Detection | 3/4 | In Progress|  |
+| 3. XGBoost Anomaly Detection | 4/4 | Complete   | 2026-02-25 |
 | 4. GNN Cascade Failure Prediction | 0/TBD | Not started | - |
 | 5. Federated Learning Simulation | 0/TBD | Not started | - |
 | 6. Deployment | 0/TBD | Not started | - |
