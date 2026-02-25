@@ -66,7 +66,7 @@ export function DashboardLayout() {
 
   return (
     <div className="h-screen flex flex-col bg-grid-bg overflow-hidden">
-      <Header connected={connected} />
+      <Header connected={connected} nodes={liveNodes} />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar onStormEvent={handleStormEvent} stormActive={stormActive} />
         <main className="flex-1 relative bg-grid-bg" id="map-canvas">

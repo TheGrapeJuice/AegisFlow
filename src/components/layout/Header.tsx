@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { Zap } from "lucide-react";
+import type { GridNode } from "../../types/grid";
 
 interface HeaderProps {
   connected?: boolean;
+  nodes?: GridNode[];
 }
 
-export function Header({ connected = true }: HeaderProps) {
+export function Header({ connected = true, nodes = [] }: HeaderProps) {
   const [time, setTime] = useState(new Date().toLocaleTimeString());
 
   useEffect(() => {
@@ -15,15 +17,39 @@ export function Header({ connected = true }: HeaderProps) {
     return () => clearInterval(interval);
   }, []);
 
+  const normalCount = nodes.filter(n => n.status === 'normal').length;
+  const warningCount = nodes.filter(n => n.status === 'warning').length;
+  const criticalCount = nodes.filter(n => n.status === 'critical').length;
+
   return (
-    <header className="h-12 bg-grid-surface border-b border-grid-border flex items-center px-4 flex-shrink-0">
-      {/* Left: Logo */}
+    <header className="h-12 bg-grid-surface flex items-center px-4 flex-shrink-0 relative">
+      {/* Gradient bottom border replacing flat border-b */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-px"
+        style={{ background: 'linear-gradient(to right, transparent, rgba(96,165,250,0.3) 50%, transparent)' }}
+      />
+
+      {/* Logo */}
       <div className="flex items-center gap-2">
         <Zap className="w-5 h-5 text-blue-400" />
-        <span className="text-white font-bold text-lg tracking-tight">AegisFlow</span>
+        <span
+          className="text-white font-bold text-lg tracking-tight"
+          style={{ textShadow: '0 0 12px rgba(96,165,250,0.4)' }}
+        >
+          AegisFlow
+        </span>
       </div>
 
-      {/* Right: Connection status + timestamp */}
+      {/* Live node summary chips */}
+      {nodes.length > 0 && (
+        <div className="ml-8 flex items-center gap-4 text-xs font-mono">
+          <span className="text-node-normal">● {normalCount} Normal</span>
+          {warningCount > 0 && <span className="text-node-warning">● {warningCount} Warning</span>}
+          {criticalCount > 0 && <span className="text-node-critical animate-pulse">● {criticalCount} Critical</span>}
+        </div>
+      )}
+
+      {/* Right: connection status + clock */}
       <div className="ml-auto flex items-center gap-4">
         {connected ? (
           <div className="flex items-center gap-2">
