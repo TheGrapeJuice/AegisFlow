@@ -16,7 +16,7 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 **Last Activity:** 2026-02-25
 Last activity: 2026-02-25 — Completed 03-01 (XGBoost ML backend: train.py, inference.py, model.json, NodeState extension)
 
-**Progress:** [████████░░] 79%
+**Progress:** [████████░░] 84%
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Last activity: 2026-02-25 — Completed 03-01 (XGBoost ML backend: train.py, inf
 | Phase 03-xgboost-anomaly-detection P03 | 2min | 2 tasks | 3 files |
 | Phase 03-xgboost-anomaly-detection P04 | 5min | 2 tasks | 0 files |
 | Phase 04-gnn-cascade-failure-prediction P01 | 13min | 3 tasks | 4 files |
+| Phase 04-gnn-cascade-failure-prediction P02 | 1 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -97,6 +98,8 @@ Recent decisions affecting current work:
 - [Phase 04-01]: torch==2.6.0 over 2.2.2: Python 3.13 incompatible with torch 2.2.2 — oldest available CPU build is 2.6.0
 - [Phase 04-01]: Module-level eager model load at import: avoids first-call latency in 5s inference loop; matches xgboost singleton pattern
 - [Phase 04-01]: predict_cascade data contract: cascade_chain with confidence/time_to_cascade_min/hop_distance + rerouting_path + rerouting_summary
+- [Phase 04-02]: LAST_CASCADE module-level dict pattern: pre-compute in background, read synchronously in REST endpoint — avoids blocking FastAPI event loop on GNN inference
+- [Phase 04-02]: cascade_risk=0.0 default in WebSocket payload: frontend can always read cascade_risk without null checks — 0.0 means not in cascade chain
 
 ### Pending Todos
 
@@ -112,6 +115,6 @@ None.
 
 ## Session Continuity
 
-**Last session:** 2026-02-26T01:30:27.474Z
-**Stopped At:** Completed 04-01-PLAN.md
+**Last session:** 2026-02-26T01:34:05.994Z
+**Stopped At:** Completed 04-02-PLAN.md
 **Resume File:** None
