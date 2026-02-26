@@ -13,6 +13,9 @@ router = APIRouter()
 # Connected WebSocket clients
 _clients: set[WebSocket] = set()
 
+# Last GNN cascade prediction result — updated by _cascade_loop every 5s
+LAST_CASCADE: dict = {"cascade_chain": [], "rerouting_path": [], "rerouting_summary": ""}
+
 
 @router.websocket("/ws/nodes")
 async def ws_nodes(websocket: WebSocket):
@@ -30,7 +33,12 @@ async def _broadcast_loop():
     """Broadcast current node state to all WebSocket clients every 1 second."""
     while True:
         simulate_sensor_tick()
-        payload = [n.model_dump() for n in NODE_STATES.values()]
+        cascade_ids = {item["node_id"]: item["confidence"] for item in LAST_CASCADE.get("cascade_chain", [])}
+        payload = []
+        for n in NODE_STATES.values():
+            d = n.model_dump()
+            d["cascade_risk"] = cascade_ids.get(n.id, 0.0)
+            payload.append(d)
         dead: set[WebSocket] = set()
         for ws in _clients.copy():
             try:
@@ -55,6 +63,33 @@ async def _inference_loop():
         except Exception as e:
             # Never crash the loop — log and continue
             print(f"[inference] error: {e}")
+
+
+async def _cascade_loop():
+    """Run GNN cascade prediction every 5 seconds when anomalies are present."""
+    from backend.ml.gnn_inference import predict_cascade
+    from backend.state import EDGES
+    global LAST_CASCADE
+    while True:
+        await asyncio.sleep(5)
+        try:
+            anomalous_ids = [
+                nid for nid, node in NODE_STATES.items() if node.is_anomalous
+            ]
+            if anomalous_ids:
+                result = predict_cascade(anomalous_ids, NODE_STATES, EDGES)
+                LAST_CASCADE = result
+            else:
+                LAST_CASCADE = {"cascade_chain": [], "rerouting_path": [], "rerouting_summary": ""}
+        except Exception as e:
+            print(f"[cascade] error: {e}")
+            # Never crash — keep LAST_CASCADE at last known good state
+
+
+@router.get("/api/cascade")
+async def get_cascade():
+    """Return the latest GNN cascade prediction result."""
+    return JSONResponse(LAST_CASCADE)
 
 
 @router.post("/api/storm")
