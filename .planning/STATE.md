@@ -16,7 +16,7 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 **Last Activity:** 2026-02-25
 Last activity: 2026-02-25 — Completed 03-01 (XGBoost ML backend: train.py, inference.py, model.json, NodeState extension)
 
-**Progress:** [██████████] 100%
+**Progress:** [████████░░] 79%
 
 ## Performance Metrics
 
@@ -46,6 +46,7 @@ Last activity: 2026-02-25 — Completed 03-01 (XGBoost ML backend: train.py, inf
 | Phase 03-xgboost-anomaly-detection P02 | 2min | 1 tasks | 2 files |
 | Phase 03-xgboost-anomaly-detection P03 | 2min | 2 tasks | 3 files |
 | Phase 03-xgboost-anomaly-detection P04 | 5min | 2 tasks | 0 files |
+| Phase 04-gnn-cascade-failure-prediction P01 | 13min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,9 @@ Recent decisions affecting current work:
 - [Phase 03-03]: AnomalyPanel placed as fixed overlay sibling inside flex container — does not affect flex layout
 - [Phase 03-03]: dismissedNodeIds Set cleared on storm reset to enable re-alert after second storm
 - [Phase 03-04]: Phase 3 approved on first submission — all 4 success criteria confirmed without requiring any fixes
+- [Phase 04-01]: torch==2.6.0 over 2.2.2: Python 3.13 incompatible with torch 2.2.2 — oldest available CPU build is 2.6.0
+- [Phase 04-01]: Module-level eager model load at import: avoids first-call latency in 5s inference loop; matches xgboost singleton pattern
+- [Phase 04-01]: predict_cascade data contract: cascade_chain with confidence/time_to_cascade_min/hop_distance + rerouting_path + rerouting_summary
 
 ### Pending Todos
 
@@ -108,6 +112,6 @@ None.
 
 ## Session Continuity
 
-**Last session:** 2026-02-25T21:44:16.043Z
-**Stopped At:** Phase 4 context gathered
-**Resume File:** .planning/phases/04-gnn-cascade-failure-prediction/04-CONTEXT.md
+**Last session:** 2026-02-26T01:30:27.474Z
+**Stopped At:** Completed 04-01-PLAN.md
+**Resume File:** None

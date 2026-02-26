@@ -135,7 +135,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. Frontend Shell | 4/4 | Complete   | 2026-02-24 |
 | 2. Backend & Data Pipeline | 6/6 | Complete   | 2026-02-25 |
 | 3. XGBoost Anomaly Detection | 4/4 | Complete   | 2026-02-25 |
-| 4. GNN Cascade Failure Prediction | 0/5 | Not started | - |
+| 4. GNN Cascade Failure Prediction | 1/5 | In Progress|  |
 | 5. Federated Learning Simulation | 0/TBD | Not started | - |
 | 6. Deployment | 0/TBD | Not started | - |
 | 7. Demo Assets | 0/TBD | Not started | - |
