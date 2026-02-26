@@ -8,9 +8,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    from backend.routers.ws import _broadcast_loop, _inference_loop
+    from backend.routers.ws import _broadcast_loop, _inference_loop, _cascade_loop
     asyncio.create_task(_broadcast_loop())
     asyncio.create_task(_inference_loop())
+    asyncio.create_task(_cascade_loop())
     yield
 
 
