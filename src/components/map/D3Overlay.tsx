@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import type maplibregl from 'maplibre-gl';
-import type { GridNode } from '../../types/grid';
+import type { GridNode, CascadeResult, CascadeNode } from '../../types/grid';
 
 const STATUS_GLOW: Record<string, { color: string; minOpacity: number; maxOpacity: number; minR: number; maxR: number; period: number }> = {
   normal:   { color: '#22c55e', minOpacity: 0.14, maxOpacity: 0.30, minR: 2, maxR: 6,  period: 4000 },
@@ -23,33 +23,38 @@ interface D3OverlayProps {
   stormActive?: boolean;
   epicenterId?: string | null;
   affectedNodeIds?: string[];
+  cascadeResult?: CascadeResult;
 }
 
-export function D3Overlay({ map, selectedNodeId, nodes, stormActive, epicenterId, affectedNodeIds }: D3OverlayProps) {
+export function D3Overlay({ map, selectedNodeId, nodes, stormActive, epicenterId, affectedNodeIds, cascadeResult }: D3OverlayProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const nodesRef = useRef(nodes);
   const stormActiveRef = useRef(stormActive);
   const epicenterIdRef = useRef(epicenterId);
   const affectedNodeIdsRef = useRef(affectedNodeIds ?? []);
+  const cascadeResultRef = useRef<CascadeResult | null>(null);
 
   // Keep refs in sync with props
   useEffect(() => { nodesRef.current = nodes; }, [nodes]);
   useEffect(() => { stormActiveRef.current = stormActive; }, [stormActive]);
   useEffect(() => { epicenterIdRef.current = epicenterId ?? null; }, [epicenterId]);
   useEffect(() => { affectedNodeIdsRef.current = affectedNodeIds ?? []; }, [affectedNodeIds]);
+  useEffect(() => { cascadeResultRef.current = cascadeResult ?? null; }, [cascadeResult]);
 
   useEffect(() => {
     if (!map || !svgRef.current) return;
     const m = map;
     const svg = d3.select(svgRef.current);
 
-    // Ensure layer order: glow → labels → storm
+    // Ensure layer order: glow → labels → cascade → storm
     if (svg.select('g.glow-layer').empty()) svg.append('g').attr('class', 'glow-layer');
     if (svg.select('g.label-layer').empty()) svg.append('g').attr('class', 'label-layer');
+    if (svg.select('g.cascade-layer').empty()) svg.append('g').attr('class', 'cascade-layer');
     if (svg.select('g.storm-layer').empty()) svg.append('g').attr('class', 'storm-layer');
 
     const glowLayer = svg.select<SVGGElement>('g.glow-layer');
     const labelLayer = svg.select<SVGGElement>('g.label-layer');
+    const cascadeLayer = svg.select<SVGGElement>('g.cascade-layer');
 
     function project(node: GridNode) {
       const point = m.project([node.lng, node.lat]);
@@ -99,7 +104,46 @@ export function D3Overlay({ map, selectedNodeId, nodes, stormActive, epicenterId
 
       labels.exit().remove();
 
+      // Cascade: timing labels (above node) + confidence badges (below node name)
+      const cascadeChain = cascadeResultRef.current?.cascade_chain ?? [];
+      const cascadeById = new Map(cascadeChain.map(c => [c.node_id, c]));
 
+      // Timing labels — "~4 min" above node
+      const timingLabels = cascadeLayer.selectAll<SVGTextElement, CascadeNode>('text.cascade-timing')
+        .data(cascadeChain, d => d.node_id);
+      timingLabels.enter()
+        .append('text').attr('class', 'cascade-timing')
+        .style('pointer-events', 'none')
+        .style('font-size', '9px')
+        .style('font-family', 'Inter, system-ui, sans-serif')
+        .style('user-select', 'none')
+        .merge(timingLabels as any)
+        .attr('x', d => { const n = currentNodes.find(nd => nd.id === d.node_id); return n ? project(n).x : 0; })
+        .attr('y', d => { const n = currentNodes.find(nd => nd.id === d.node_id); return n ? project(n).y - 28 : 0; })
+        .attr('text-anchor', 'middle')
+        .attr('fill', '#f59e0b')
+        .attr('opacity', d => cascadeById.has(d.node_id) ? 1 : 0)
+        .text(d => `~${d.time_to_cascade_min.toFixed(0)} min`);
+      timingLabels.exit().remove();
+
+      // Confidence badges — "87%" below node name label
+      const confBadges = cascadeLayer.selectAll<SVGTextElement, CascadeNode>('text.cascade-conf')
+        .data(cascadeChain, d => d.node_id);
+      confBadges.enter()
+        .append('text').attr('class', 'cascade-conf')
+        .style('pointer-events', 'none')
+        .style('font-size', '8px')
+        .style('font-weight', '600')
+        .style('font-family', 'Inter, system-ui, sans-serif')
+        .style('user-select', 'none')
+        .merge(confBadges as any)
+        .attr('x', d => { const n = currentNodes.find(nd => nd.id === d.node_id); return n ? project(n).x : 0; })
+        .attr('y', d => { const n = currentNodes.find(nd => nd.id === d.node_id); return n ? project(n).y - 4 : 0; })
+        .attr('text-anchor', 'middle')
+        .attr('fill', d => d.confidence > 0.75 ? '#f59e0b' : d.confidence > 0.5 ? '#d97706' : '#92400e')
+        .attr('opacity', d => cascadeById.has(d.node_id) ? 1 : 0)
+        .text(d => `${Math.round(d.confidence * 100)}% risk`);
+      confBadges.exit().remove();
     }
 
     render();
@@ -127,6 +171,44 @@ export function D3Overlay({ map, selectedNodeId, nodes, stormActive, epicenterId
             .attr('r', r + cfg.minR + t * (cfg.maxR - cfg.minR))
             .attr('fill-opacity', cfg.minOpacity + t * (cfg.maxOpacity - cfg.minOpacity));
         });
+    });
+
+    // Cascade pulse animation — separate timer so it doesn't interfere with glow timer
+    const cascadeTimer = d3.timer((elapsed) => {
+      const chain = cascadeResultRef.current?.cascade_chain ?? [];
+      if (chain.length === 0) {
+        // Clear cascade circles when no cascade active
+        cascadeLayer.selectAll('circle.cascade-pulse').attr('opacity', 0);
+        return;
+      }
+      chain.forEach((item) => {
+        const node = nodesRef.current.find(n => n.id === item.node_id);
+        if (!node) return;
+        const pos = m.project([node.lng, node.lat]);
+        const baseR = BASE_RADIUS[node.type] ?? 6;
+        // Stagger phase by hop_distance so cascade "flows" visually
+        const phase = (item.hop_distance * 0.8) + (elapsed / 1200) * 2 * Math.PI;
+        const t = (Math.sin(phase) + 1) / 2;
+        // Three-tier: >75% bright+pulse, 50-75% steady, <50% faded
+        const opacity = item.confidence > 0.75
+          ? 0.4 + t * 0.5        // bright pulsing
+          : item.confidence > 0.5
+            ? 0.55                // steady
+            : 0.25;               // faded
+
+        let circle = cascadeLayer.select<SVGCircleElement>(`circle.cascade-pulse[data-id="${item.node_id}"]`);
+        if (circle.empty()) {
+          circle = cascadeLayer.append('circle')
+            .attr('class', 'cascade-pulse')
+            .attr('data-id', item.node_id)
+            .attr('fill', '#f59e0b')
+            .style('pointer-events', 'none');
+        }
+        circle
+          .attr('cx', pos.x).attr('cy', pos.y)
+          .attr('r', baseR + (item.confidence > 0.75 ? 2 + t * 4 : 2))
+          .attr('fill-opacity', opacity);
+      });
     });
 
     // --- Storm layer elements (managed separately from render()) ---
@@ -239,6 +321,8 @@ export function D3Overlay({ map, selectedNodeId, nodes, stormActive, epicenterId
       m.off('zoom', render);
       m.off('resize', render);
       timer.stop();
+      cascadeTimer.stop();
+      cascadeLayer.selectAll('*').remove();
       if (shockwaveTimerId !== null) clearTimeout(shockwaveTimerId);
       stormTimer.stop();
       shockwaveCircle.remove();

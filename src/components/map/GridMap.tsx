@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import type { GridNode, GridEdge } from '../../types/grid';
+import type { GridNode, GridEdge, CascadeResult } from '../../types/grid';
 import { D3Overlay } from './D3Overlay';
 import { MapLegend } from './MapLegend';
 import { StormCanvas } from './StormCanvas';
@@ -20,6 +20,7 @@ interface GridMapProps {
   stormActive?: boolean;
   epicenterId?: string | null;
   affectedNodeIds?: string[];
+  cascadeResult?: CascadeResult;
 }
 
 function nodesToGeoJSON(nodes: GridNode[]) {
@@ -66,7 +67,7 @@ function edgesToGeoJSON(nodes: GridNode[], edges: GridEdge[]) {
   };
 }
 
-export function GridMap({ nodes, edges, onNodeClick, selectedNodeId, stormActive, epicenterId, affectedNodeIds }: GridMapProps) {
+export function GridMap({ nodes, edges, onNodeClick, selectedNodeId, stormActive, epicenterId, affectedNodeIds, cascadeResult }: GridMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
@@ -127,6 +128,23 @@ export function GridMap({ nodes, edges, onNodeClick, selectedNodeId, stormActive
           'circle-stroke-width': 2,
           'circle-stroke-color': '#0f1117',
           'circle-opacity': 0.95,
+        },
+      });
+
+      // Rerouting overlay source and layer (blue dashed path)
+      map.addSource('rerouting-edges', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+      });
+      map.addLayer({
+        id: 'rerouting-edges-layer',
+        type: 'line',
+        source: 'rerouting-edges',
+        paint: {
+          'line-color': '#3b82f6',
+          'line-width': 3,
+          'line-opacity': 0.85,
+          'line-dasharray': [2, 1],
         },
       });
 
@@ -198,6 +216,37 @@ export function GridMap({ nodes, edges, onNodeClick, selectedNodeId, stormActive
     map.setPaintProperty('grid-nodes-layer', 'circle-stroke-color', '#0f1117');
   }, [selectedNodeId, mapLoaded]);
 
+  // Update rerouting overlay whenever cascadeResult changes
+  useEffect(() => {
+    if (!mapLoaded || !mapRef.current) return;
+    const map = mapRef.current;
+    const reroutingSource = map.getSource('rerouting-edges') as maplibregl.GeoJSONSource | undefined;
+    if (!reroutingSource) return;
+    const path = cascadeResult?.rerouting_path ?? [];
+    if (path.length < 2) {
+      reroutingSource.setData({ type: 'FeatureCollection', features: [] });
+      return;
+    }
+    // Build LineString features from path node IDs using current nodes prop
+    const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
+    for (let i = 0; i < path.length - 1; i++) {
+      const src = nodes.find(n => n.id === path[i]);
+      const tgt = nodes.find(n => n.id === path[i + 1]);
+      if (src && tgt) {
+        features.push({
+          type: 'Feature' as const,
+          geometry: { type: 'LineString' as const, coordinates: [[src.lng, src.lat], [tgt.lng, tgt.lat]] },
+          properties: {},
+        });
+      }
+    }
+    // Delay rerouting reveal by 1500ms — cascade animation plays first
+    const timeoutId = setTimeout(() => {
+      reroutingSource.setData({ type: 'FeatureCollection', features });
+    }, 1500);
+    return () => clearTimeout(timeoutId);
+  }, [cascadeResult, nodes, mapLoaded]);
+
   return (
     <div className="absolute inset-0">
       <div ref={mapContainerRef} className="w-full h-full" />
@@ -210,6 +259,7 @@ export function GridMap({ nodes, edges, onNodeClick, selectedNodeId, stormActive
             stormActive={stormActive}
             epicenterId={epicenterId}
             affectedNodeIds={affectedNodeIds}
+            cascadeResult={cascadeResult}
           />
           <StormCanvas
             stormActive={stormActive ?? false}
