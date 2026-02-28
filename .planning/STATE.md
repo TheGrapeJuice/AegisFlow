@@ -16,7 +16,7 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 **Last Activity:** 2026-02-25
 Last activity: 2026-02-25 — Completed 03-01 (XGBoost ML backend: train.py, inference.py, model.json, NodeState extension)
 
-**Progress:** [████████░░] 84%
+**Progress:** [█████████░] 89%
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Last activity: 2026-02-25 — Completed 03-01 (XGBoost ML backend: train.py, inf
 | Phase 03-xgboost-anomaly-detection P04 | 5min | 2 tasks | 0 files |
 | Phase 04-gnn-cascade-failure-prediction P01 | 13min | 3 tasks | 4 files |
 | Phase 04-gnn-cascade-failure-prediction P02 | 1 | 2 tasks | 2 files |
+| Phase 04-gnn-cascade-failure-prediction P03 | 3min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -100,6 +101,9 @@ Recent decisions affecting current work:
 - [Phase 04-01]: predict_cascade data contract: cascade_chain with confidence/time_to_cascade_min/hop_distance + rerouting_path + rerouting_summary
 - [Phase 04-02]: LAST_CASCADE module-level dict pattern: pre-compute in background, read synchronously in REST endpoint — avoids blocking FastAPI event loop on GNN inference
 - [Phase 04-02]: cascade_risk=0.0 default in WebSocket payload: frontend can always read cascade_risk without null checks — 0.0 means not in cascade chain
+- [Phase 04-03]: Separate cascadeTimer from glow timer — prevents cascade animation interference with existing glow animation
+- [Phase 04-03]: 1500ms rerouting reveal delay via setTimeout in useEffect cleanup pattern — cascade pulse plays first, then blue path appears
+- [Phase 04-03]: cascade-layer inserted between label-layer and storm-layer in D3 SVG stacking order
 
 ### Pending Todos
 
@@ -115,6 +119,6 @@ None.
 
 ## Session Continuity
 
-**Last session:** 2026-02-26T01:34:05.994Z
-**Stopped At:** Completed 04-02-PLAN.md
+**Last session:** 2026-02-28T20:40:53.952Z
+**Stopped At:** Completed 04-03-PLAN.md
 **Resume File:** None
