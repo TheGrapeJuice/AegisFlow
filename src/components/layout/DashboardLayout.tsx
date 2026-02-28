@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { StatusPanel } from './StatusPanel';
@@ -7,7 +7,8 @@ import type { AnomalyAlert } from './AnomalyPanel';
 import { useTopology } from '../../hooks/useTopology';
 import { useNodeWebSocket } from '../../hooks/useNodeWebSocket';
 import { useEventFeed } from '../../hooks/useEventFeed';
-import type { GridNode } from '../../types/grid';
+import type { GridNode, CascadeResult } from '../../types/grid';
+import { EMPTY_CASCADE } from '../../types/grid';
 
 const API_BASE = import.meta.env.VITE_API_BASE ?? 'http://localhost:8000';
 
@@ -18,6 +19,8 @@ export function DashboardLayout() {
   const [affectedNodeIds, setAffectedNodeIds] = useState<string[]>([]);
   const [anomalyAlerts, setAnomalyAlerts] = useState<AnomalyAlert[]>([]);
   const [dismissedNodeIds, setDismissedNodeIds] = useState<Set<string>>(new Set());
+  const [cascadeResult, setCascadeResult] = useState<CascadeResult>(EMPTY_CASCADE);
+  const cascadeFadeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { nodes: topologyNodes, edges, loading } = useTopology();
   const { nodeMap, connected } = useNodeWebSocket();
 
@@ -94,6 +97,36 @@ export function DashboardLayout() {
 
   }, [liveNodes, dismissedNodeIds]);
 
+  // Fetch GNN cascade prediction when anomalous node set changes
+  const anomalousIdsKey = liveNodes.filter(n => n.is_anomalous).map(n => n.id).sort().join(',');
+  useEffect(() => {
+    // Clear existing fade timer
+    if (cascadeFadeTimerRef.current) clearTimeout(cascadeFadeTimerRef.current);
+
+    if (!anomalousIdsKey) {
+      setCascadeResult(EMPTY_CASCADE);
+      return;
+    }
+
+    // Fetch cascade from GNN backend
+    fetch(`${API_BASE}/api/cascade`)
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then((data: CascadeResult) => {
+        setCascadeResult(data);
+        // Auto-fade after 30 seconds if no new anomaly change
+        cascadeFadeTimerRef.current = setTimeout(() => {
+          setCascadeResult(EMPTY_CASCADE);
+        }, 30000);
+      })
+      .catch(err => console.warn('[cascade] fetch error:', err));
+
+    return () => {
+      if (cascadeFadeTimerRef.current) clearTimeout(cascadeFadeTimerRef.current);
+    };
+  // anomalousIdsKey is derived inside the component — stable string, safe as dep
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [anomalousIdsKey]);
+
   const handleDismissAlert = (nodeId: string) => {
     setAnomalyAlerts(prev => prev.filter(a => a.nodeId !== nodeId));
     // Add to dismissed set so the node can re-alert if it becomes anomalous again after next storm
@@ -129,9 +162,10 @@ export function DashboardLayout() {
             stormActive={stormActive}
             epicenterId={epicenterId}
             affectedNodeIds={affectedNodeIds}
+            cascadeResult={cascadeResult}
           />
         </main>
-        <StatusPanel selectedNode={liveSelectedNode} latestReading={latestReading} events={events} anomalyAlerts={anomalyAlerts} onDismissAlert={handleDismissAlert} onDismissAll={handleDismissAll} />
+        <StatusPanel selectedNode={liveSelectedNode} latestReading={latestReading} events={events} anomalyAlerts={anomalyAlerts} onDismissAlert={handleDismissAlert} onDismissAll={handleDismissAll} cascadeResult={cascadeResult} />
       </div>
     </div>
   );

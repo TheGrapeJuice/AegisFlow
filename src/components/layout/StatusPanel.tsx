@@ -1,10 +1,12 @@
-import type { GridNode } from '../../types/grid';
+import type { GridNode, CascadeResult } from '../../types/grid';
+import { EMPTY_CASCADE } from '../../types/grid';
 import { NodeCharts } from '../sidebar/NodeCharts';
 import { useNodeHistory } from '../../hooks/useNodeHistory';
 import type { NodeReading } from '../../hooks/useNodeHistory';
 import type { EventEntry } from '../../hooks/useEventFeed';
 import { AnomalyPanel } from './AnomalyPanel';
 import type { AnomalyAlert } from './AnomalyPanel';
+import { CascadePanel } from './CascadePanel';
 
 interface StatusPanelProps {
   selectedNode?: GridNode | null;
@@ -13,6 +15,7 @@ interface StatusPanelProps {
   anomalyAlerts?: AnomalyAlert[];
   onDismissAlert?: (nodeId: string) => void;
   onDismissAll?: () => void;
+  cascadeResult?: CascadeResult;
 }
 
 function NodeChartsWrapper({ selectedNodeId, latestReading }: { selectedNodeId: string; latestReading?: NodeReading | null }) {
@@ -20,7 +23,7 @@ function NodeChartsWrapper({ selectedNodeId, latestReading }: { selectedNodeId: 
   return <NodeCharts readings={readings} loading={loading} />;
 }
 
-export function StatusPanel({ selectedNode, latestReading, events, anomalyAlerts = [], onDismissAlert, onDismissAll }: StatusPanelProps) {
+export function StatusPanel({ selectedNode, latestReading, events, anomalyAlerts = [], onDismissAlert, onDismissAll, cascadeResult = EMPTY_CASCADE }: StatusPanelProps) {
   return (
     <aside
       className="w-72 bg-grid-surface border-l border-grid-border flex flex-col p-3 gap-2 flex-shrink-0 overflow-y-auto"
@@ -34,6 +37,9 @@ export function StatusPanel({ selectedNode, latestReading, events, anomalyAlerts
           onDismissAll={onDismissAll}
         />
       )}
+
+      {/* Cascade risk panel — shown even when cascade_chain is empty (shows "No cascade risk detected") */}
+      <CascadePanel cascadeResult={cascadeResult} />
 
       {/* Event feed */}
       <div className="border-t border-grid-border pt-2 first:border-t-0 first:pt-0">
