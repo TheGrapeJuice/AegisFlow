@@ -16,7 +16,7 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 **Last Activity:** 2026-02-25
 Last activity: 2026-02-25 — Completed 03-01 (XGBoost ML backend: train.py, inference.py, model.json, NodeState extension)
 
-**Progress:** [█████████░] 89%
+**Progress:** [██████████] 95%
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Last activity: 2026-02-25 — Completed 03-01 (XGBoost ML backend: train.py, inf
 | Phase 04-gnn-cascade-failure-prediction P01 | 13min | 3 tasks | 4 files |
 | Phase 04-gnn-cascade-failure-prediction P02 | 1 | 2 tasks | 2 files |
 | Phase 04-gnn-cascade-failure-prediction P03 | 3min | 2 tasks | 3 files |
+| Phase 04-gnn-cascade-failure-prediction PP04 | 2min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -104,6 +105,9 @@ Recent decisions affecting current work:
 - [Phase 04-03]: Separate cascadeTimer from glow timer — prevents cascade animation interference with existing glow animation
 - [Phase 04-03]: 1500ms rerouting reveal delay via setTimeout in useEffect cleanup pattern — cascade pulse plays first, then blue path appears
 - [Phase 04-03]: cascade-layer inserted between label-layer and storm-layer in D3 SVG stacking order
+- [Phase 04-gnn-cascade-failure-prediction]: CascadePanel always rendered with EMPTY_CASCADE default — stable sidebar layout, placeholder communicates idle state
+- [Phase 04-gnn-cascade-failure-prediction]: anomalousIdsKey as sorted-join dep gates /api/cascade fetch on anomaly set changes, not every WebSocket tick
+- [Phase 04-gnn-cascade-failure-prediction]: cascadeFadeTimerRef cleared on each anomalousIdsKey change prevents stale auto-fade races with fresh storm cycles
 
 ### Pending Todos
 
@@ -119,6 +123,6 @@ None.
 
 ## Session Continuity
 
-**Last session:** 2026-02-28T20:40:53.952Z
-**Stopped At:** Completed 04-03-PLAN.md
+**Last session:** 2026-02-28T20:45:30.355Z
+**Stopped At:** Completed 04-04-PLAN.md
 **Resume File:** None
