@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Backend & Data Pipeline** - FastAPI + InfluxDB + WebSocket delivering live synthetic sensor data to the frontend (completed 2026-02-25)
 - [x] **Phase 3: XGBoost Anomaly Detection** - ML pipeline end-to-end: InfluxDB → XGBoost inference → anomaly alerts in the UI (completed 2026-02-25)
 - [ ] **Phase 4: GNN Cascade Failure Prediction** - GNN cascade chain visualization, rerouting overlay, and confidence scores
-- [ ] **Phase 5: Federated Learning Simulation** - Flower FL simulation with 3 partitioned clients and live training progress panel
+- [ ] **Phase 5: Federated Learning Simulation** - Manual FedAvg simulation with 3 geographically partitioned clients and live training progress panel
 - [ ] **Phase 6: Deployment** - Frontend on Vercel, backend on Railway, cold-start mitigation active
 - [ ] **Phase 7: Demo Assets** - Architecture README and 2-minute storm simulation demo video
 
@@ -103,7 +103,14 @@ Plans:
   1. The FL panel shows three distinct clients with separate per-client accuracy curves that diverge (proving non-IID data partitioning, not the same dataset repeated)
   2. The global model accuracy curve shows improvement over FL rounds in the UI
   3. After each 60-second model reload interval, the inference loop visibly uses the updated FL weights — predictions shift as rounds progress
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — FL train module (manual FedAvg, geographic partitioning) + FL inference module (hot-reload)
+- [ ] 05-02-PLAN.md — Backend: _fl_loop + _fl_reload_loop asyncio tasks, /api/fl/status endpoint, main.py lifespan update
+- [ ] 05-03-PLAN.md — Frontend: FLPanel.tsx D3 multi-line accuracy chart with 5s polling
+- [ ] 05-04-PLAN.md — Wire FLPanel into StatusPanel below CascadePanel
+- [ ] 05-05-PLAN.md — Human verification of all 3 Phase 5 success criteria
 
 ### Phase 6: Deployment
 **Goal**: The dashboard is live at a public URL that a recruiter can open without hitting a cold-start broken state
@@ -136,6 +143,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 2. Backend & Data Pipeline | 6/6 | Complete   | 2026-02-25 |
 | 3. XGBoost Anomaly Detection | 4/4 | Complete   | 2026-02-25 |
 | 4. GNN Cascade Failure Prediction | 4/5 | In Progress|  |
-| 5. Federated Learning Simulation | 0/TBD | Not started | - |
+| 5. Federated Learning Simulation | 0/5 | Not started | - |
 | 6. Deployment | 0/TBD | Not started | - |
 | 7. Demo Assets | 0/TBD | Not started | - |
