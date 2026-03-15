@@ -12,3 +12,26 @@ body {
 .maplibregl-ctrl-logo {
   display: none !important;
 }
+
+/* Themed scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f1117;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e2840;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2a3a5c;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1e2840 #0f1117;
+}

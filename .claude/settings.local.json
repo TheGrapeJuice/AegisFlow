@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(cd:*)",
+      "Bash(cd \"C:/Users/saads/Documents/Aegis Flow\" && git init && git add \".planning/research/\" && git status 2>&1)",
+      "Bash(cd \"C:/Users/saads/Documents/Aegis Flow\" && git commit -m \"$\\(cat <<'EOF'\ndocs: complete project research for Aegis Flow smart grid dashboard\n\nAdd all 4 research dimension files \\(STACK, FEATURES, ARCHITECTURE, PITFALLS\\)\nand synthesized SUMMARY.md covering recommended stack, feature priorities,\n8-phase build order, 28 specific pitfalls, and roadmap implications.\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\nEOF\n\\)\" 2>&1)",
+      "Bash(tail:*)"
+    ]
+  }
+}

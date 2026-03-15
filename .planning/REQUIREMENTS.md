@@ -19,7 +19,7 @@
 - [x] **MAP-01**: MapLibre GL JS base map renders a dark-styled city grid as the spatial canvas (not Mapbox — avoids billing risk)
 - [x] **MAP-02**: D3.js graph overlay renders power nodes as dots and distribution routes as connecting lines on top of the map, synchronized on pan/zoom
 - [x] **MAP-03**: User can click a node to see its name, type, and current sensor readings in a detail panel
-- [x] **MAP-04**: When a cascade failure is predicted, nodes in the propagation chain highlight in sequence with a timing label (e.g., "~4 min")
+- [ ] **MAP-04**: When a cascade failure is predicted, nodes in the propagation chain highlight in sequence with a timing label (e.g., "~4 min")
 
 ### Backend & Data Pipeline
 
@@ -33,7 +33,7 @@
 - [x] **UX-01**: "Simulate Storm Event" button injects a fault into the data stream, triggering anomaly detection and cascade prediction
 - [x] **UX-02**: Sidebar displays live voltage and frequency charts for the selected node, updating via WebSocket stream
 - [x] **UX-03**: Anomaly alert panel shows a timestamped list of detected anomalies; alerts can be dismissed
-- [x] **UX-04**: When a rerouting path is recommended, it highlights in blue on the map overlay
+- [ ] **UX-04**: When a rerouting path is recommended, it highlights in blue on the map overlay
 
 ### ML — Anomaly Detection
 
@@ -92,7 +92,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MAP-01 | Phase 1 | Complete |
 | MAP-02 | Phase 1 | Complete |
 | MAP-03 | Phase 1 | Complete |
-| MAP-04 | Phase 4 | Complete |
+| MAP-04 | Phase 4 | Pending |
 | BACK-01 | Phase 2 | Complete |
 | BACK-02 | Phase 2 | Complete |
 | BACK-03 | Phase 2 | Complete |
@@ -100,7 +100,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UX-01 | Phase 2 | Complete |
 | UX-02 | Phase 2 | Complete |
 | UX-03 | Phase 3 | Complete |
-| UX-04 | Phase 4 | Complete |
+| UX-04 | Phase 4 | Pending |
 | ML-01 | Phase 3 | Complete |
 | ML-02 | Phase 4 | Complete |
 | ML-03 | Phase 4 | Complete |
